@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0f7fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #00796b;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar {
+    background-color: #004d40;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 200px;
+    height: 100%;
+}
+
+.category h4 {
+    margin-bottom: 10px;
+}
+
+.homework-list {
+    margin-left: 220px;
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.homework-item {
+    background-color: #b2dfdb;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.homework-item p {
+    margin-bottom: 5px;
+}
+
+.due-date {
+    float: right;
+}
+
+.expand {
+    text-align: center;
+    margin-top: 20px;
+}
+
+footer {
+    background-color: #004d40;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+}
+
+#login-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#login-btn:hover {
+    background-color: #004d40;
+}
+
+#settings-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#settings-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+.category button {
+    margin: 5px 0;
+    padding: 5px;
+    width: 100%;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.category button:hover {
+    background-color: #004d40;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UL-Homework</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>UL-Homework</h1>
+        <h2>You link with your homework</h2>
+        <button id="settings-btn">
+            <img src="settings-icon.png" alt="Settings" />
+        </button>
+    </header>
+    
+    <section class="sidebar">
+        <h3>Categories</h3>
+        <div class="category">
+            <h4>Completion Status</h4>
+            <label><input type="checkbox" id="filter-finished"> Finished</label><br>
+            <label><input type="checkbox" id="filter-unfinished"> Unfinished</label>
+        </div>
+
+        <div class="category">
+            <h4>Subject</h4>
+            <label><input type="checkbox" id="filter-math"> Math</label><br>
+            <label><input type="checkbox" id="filter-english"> English</label><br>
+            <label><input type="checkbox" id="filter-chemistry"> Chemistry</label><br>
+            <label><input type="checkbox" id="filter-physics"> Physics</label><br>
+            <label><input type="checkbox" id="filter-economics"> Economics</label>
+        </div>
+
+        <div class="category">
+            <h4>Community</h4>
+            <button id="need-help-btn">Need help on the questions</button><br>
+            <button id="write-blog-btn">Write a question-solving blog</button>
+        </div>
+    </section>
+
+    <section class="homework-list">
+        <h3>Homework Assignments</h3>
+        <div class="homework-item" data-subject="Math" data-status="unfinished">
+            <p><strong>Math - Mr. John</strong> (Submit via: Firefly) <span class="due-date">Due: 2024-09-15</span></p>
+            <label><input type="checkbox" class="homework-status"> Finished</label>
+            <p class="expand"><a href="#">Expand</a></p>
+        </div>
+
+        <div class="homework-item" data-subject="English" data-status="unfinished">
+            <p><strong>English - Ms. Smith</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-16</span></p>
+            <label><input type="checkbox" class="homework-status"> Finished</label>
+            <p class="expand"><a href="#">Expand</a></p>
+        </div>
+
+        <div class="homework-item" data-subject="Chemistry" data-status="unfinished">
+            <p><strong>Chemistry - Dr. Brown</strong> (Submit via: Class) <span class="due-date">Due: 2024-09-17</span></p>
+            <label><input type="checkbox" class="homework-status"> Finished</label>
+            <p class="expand"><a href="#">Expand</a></p>
+        </div>
+    </section>
+
+    <footer>
+        <p>I don’t procrastinate. I save my homework until the last minute so that, by the time I do it, I’ll be older and wiser.</p>
+    </footer>
+
+    <button id="login-btn">Login</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
