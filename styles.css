@@ -17,37 +17,57 @@ body {
 
 .container {
     display: flex;
-    width: 80%;
-    height: 80%;
-    border-radius: 15px;
+    width: 96%;
+    height: 92%;
+    border-radius: 16px;
     overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent */
-    backdrop-filter: blur(10px); /* Global blur effect */
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4); /* Optional shadow for depth */
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
 }
 
-.sidebar, .main {}
-
 .sidebar {
-    width: 25%;
+    width: 22%;
+    min-width: 250px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.sidebar h1 {
-    font-size: 1.5em;
+.header {
     margin-bottom: 10px;
 }
 
+.sidebar h1 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
 .sidebar p {
-    font-size: 0.9em;
-    color: #ccc;
+    font-size: 0.8em;
+    color: #bcbcbc;
+    margin-bottom: 5px;
+}
+
+.header hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    margin-bottom: 5px;
+}
+
+.content {
+    margin-top: 10px;
 }
 
 .homework, .community {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.homework h2, .community h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: white;
 }
 
 button {
@@ -60,11 +80,15 @@ button {
     border-radius: 5px;
     cursor: pointer;
     text-align: left;
-    backdrop-filter: blur(5px); /* Apply a small blur effect to buttons */
+    backdrop-filter: blur(5px);
 }
 
 button:hover {
     background-color: rgba(255, 255, 255, 0.3);
+}
+
+.settings {
+    margin-top: auto;
 }
 
 .settings button {
@@ -76,7 +100,7 @@ button:hover {
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
-    backdrop-filter: blur(5px); /* Apply a small blur effect to settings button */
+    backdrop-filter: blur(5px);
 }
 
 .main {
@@ -84,27 +108,23 @@ button:hover {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    gap: 2px; /* 缩小模块之间的间距 */
 }
 
-.overdue {
-    flex: 1;
+.overdue, .todo, .done {
     background-color: rgba(255, 255, 255, 0.2);
-    margin-bottom: 20px;
     padding: 20px;
     border-radius: 10px;
-    backdrop-filter: blur(10px); /* Blur effect for overdue section */
-}
-
-.todo-done {
+    backdrop-filter: blur(10px);
     display: flex;
-    justify-content: space-between;
-    flex: 1;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    min-height: 100px; /* 设置最小高度 */
 }
 
-.todo, .done {
-    width: 48%;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 20px;
-    border-radius: 10px;
-    backdrop-filter: blur(10px); /* Blur effect for to-do and done sections */
+.resizer {
+    height: 2px; /* 隐藏调整条，使其仅占2px的空间 */
+    background-color: transparent; /* 隐藏颜色，但保持功能 */
+    cursor: row-resize;
 }

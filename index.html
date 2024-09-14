@@ -12,36 +12,98 @@
             <div class="header">
                 <h1>ULHomework</h1>
                 <p>You Link With Your Homework</p>
+                <hr> <!-- 分割线 -->
             </div>
-            <div class="homework">
-                <h2>Homeworks</h2>
-                <button>Due Today</button>
-                <button>Within a week</button>
-                <button>Recent</button>
-                <button>LongTime Projects</button>
+            
+            <div class="content">
+                <div class="homework">
+                    <h2>Homeworks</h2>
+                    <button>Due Today</button>
+                    <button>Within a week</button>
+                    <button>Recent</button>
+                    <button>LongTime Projects</button>
+                </div>
+                <div class="community">
+                    <h2>Community</h2>
+                    <button>Need help on the questions</button>
+                    <button>Write a question-solving-blog</button>
+                </div>
             </div>
-            <div class="community">
-                <h2>Community</h2>
-                <button>Need help on the questions</button>
-                <button>Write a question-solving-blog</button>
-            </div>
+            
             <div class="settings">
                 <button>Settings</button>
             </div>
         </div>
+        
         <div class="main">
             <div class="overdue">
                 <h2>Overdue</h2>
+                <!-- 内容 -->
             </div>
-            <div class="todo-done">
-                <div class="todo">
-                    <h2>To do</h2>
-                </div>
-                <div class="done">
-                    <h2>Done</h2>
-                </div>
+            <div class="resizer"></div> <!-- 用于调整高度的分隔线 -->
+            <div class="todo">
+                <h2>To do</h2>
+                <!-- 内容 -->
+            </div>
+            <div class="resizer"></div> <!-- 用于调整高度的分隔线 -->
+            <div class="done">
+                <h2>Done</h2>
+                <!-- 内容 -->
             </div>
         </div>
     </div>
 </body>
 </html>
+
+
+<script>
+    const resizers = document.querySelectorAll('.resizer');
+    let isDragging = false;
+    let currentResizer;
+
+    // 加载存储的高度信息
+    window.addEventListener('DOMContentLoaded', () => {
+        const overdueHeight = localStorage.getItem('overdueHeight');
+        const todoHeight = localStorage.getItem('todoHeight');
+        const doneHeight = localStorage.getItem('doneHeight');
+
+        if (overdueHeight) document.querySelector('.overdue').style.flexGrow = overdueHeight;
+        if (todoHeight) document.querySelector('.todo').style.flexGrow = todoHeight;
+        if (doneHeight) document.querySelector('.done').style.flexGrow = doneHeight;
+    });
+
+    resizers.forEach(resizer => {
+        resizer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            currentResizer = resizer;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const mainRect = document.querySelector('.main').getBoundingClientRect();
+            const todo = document.querySelector('.todo');
+            const done = document.querySelector('.done');
+            const overdue = document.querySelector('.overdue');
+
+            const heightDiff = e.clientY - mainRect.top;
+
+            if (currentResizer.previousElementSibling === overdue) {
+                overdue.style.flexGrow = heightDiff / mainRect.height;
+            } else if (currentResizer.previousElementSibling === todo) {
+                todo.style.flexGrow = heightDiff / mainRect.height;
+            }
+
+            done.style.flexGrow = 1 - (parseFloat(overdue.style.flexGrow) + parseFloat(todo.style.flexGrow));
+
+            // 存储高度信息
+            localStorage.setItem('overdueHeight', overdue.style.flexGrow);
+            localStorage.setItem('todoHeight', todo.style.flexGrow);
+            localStorage.setItem('doneHeight', done.style.flexGrow);
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    });
+</script>
