@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: url('background.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    height: 80%;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent */
+    backdrop-filter: blur(10px); /* Global blur effect */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4); /* Optional shadow for depth */
+}
+
+.sidebar, .main {}
+
+.sidebar {
+    width: 25%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar h1 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.sidebar p {
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.homework, .community {
+    margin-bottom: 30px;
+}
+
+button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    backdrop-filter: blur(5px); /* Apply a small blur effect to buttons */
+}
+
+button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.settings button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    backdrop-filter: blur(5px); /* Apply a small blur effect to settings button */
+}
+
+.main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.overdue {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px); /* Blur effect for overdue section */
+}
+
+.todo-done {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.todo, .done {
+    width: 48%;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px); /* Blur effect for to-do and done sections */
+}
