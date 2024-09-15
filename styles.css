@@ -1,6 +1,11 @@
 * {
     margin: 0;
     padding: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
@@ -80,7 +85,6 @@ button {
     border-radius: 5px;
     cursor: pointer;
     text-align: left;
-    backdrop-filter: blur(5px);
 }
 
 button:hover {
@@ -99,8 +103,7 @@ button:hover {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    text-align: center;
-    backdrop-filter: blur(5px);
+    text-align: left;
 }
 
 .main {
@@ -115,8 +118,7 @@ button:hover {
     background-color: rgba(255, 255, 255, 0.2);
     padding: 20px;
     border-radius: 10px;
-    backdrop-filter: blur(10px);
-    display: flex;
+    display: -webkit-flex;
     justify-content: center;
     align-items: center;
     font-size: 1.2em;
