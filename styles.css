@@ -121,10 +121,6 @@ button:hover {
     align-items: center;
     font-size: 1.2em;
     min-height: 100px; /* 设置最小高度 */
-    height: 100%; /* 确保元素有高度 */
-    flex-grow: 1; /* 让模块按比例拉伸 */
-    transform: translateZ(0); /* 强制触发硬件加速和重绘 */
-    will-change: transform, height; /* 提示浏览器可能发生变化 */
 }
 
 .resizer {
