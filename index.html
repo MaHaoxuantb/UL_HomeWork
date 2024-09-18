@@ -1,109 +1,172 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULHomework</title>
+    <title>UL-Homework</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="header">
-                <h1>ULHomework</h1>
-                <p>You Link With Your Homework</p>
-                <hr> <!-- 分割线 -->
-            </div>
-            
-            <div class="content">
-                <div class="homework">
-                    <h2>Homeworks</h2>
-                    <button>Due Today</button>
-                    <button>Within a week</button>
-                    <button>Recent</button>
-                    <button>LongTime Projects</button>
-                </div>
-                <div class="community">
-                    <h2>Community</h2>
-                    <button>Need help on the questions</button>
-                    <button>Write a question-solving-blog</button>
-                </div>
-            </div>
-            
-            <div class="settings">
-                <button>⚙️ Settings</button>
-            </div>
+    <header>
+        <h1>UL-Homework</h1>
+        <h2>You link with your homework</h2>
+    </header>
+
+    <section class="sidebar">
+        <h3>Categories</h3>
+        <div class="category">
+            <h4>Completion Status</h4>
+            <label><input type="checkbox" id="filter-finished"> Finished</label><br>
+            <label><input type="checkbox" id="filter-unfinished"> Unfinished</label>
         </div>
+
+        <div class="category">
+            <h4>Subject</h4>
+            <label><input type="checkbox" id="filter-math"> Math</label><br>
+            <label><input type="checkbox" id="filter-english"> English</label><br>
+            <label><input type="checkbox" id="filter-chemistry"> Chemistry</label><br>
+            <label><input type="checkbox" id="filter-physics"> Physics</label><br>
+            <label><input type="checkbox" id="filter-economics"> Economics</label>
+        </div>
+
+        <div class="category">
+            <h4>Community</h4>
+            <p> Coming Soon :D<p>
+        </div>
+    
+        <button id="settings-btn">
+            <img src="settings-icon.png" alt="Settings" />
+            <span>Settings</span> <!-- 添加 "Settings" 文本 -->
+        </button>
         
-        <div class="main">
-            <div class="overdue">
-                <h2>Overdue</h2>
-                <!-- 内容 -->
+    
+    </section>
+
+    <section class="homework-list">
+        <h3>Homework Assignments</h3>
+        <!-- 增加8个作业条目，每个包含5条内容 -->
+        <div class="homework-item" data-subject="Math" data-status="unfinished">
+            <p><strong>Math - Mr. John</strong> (Submit via: Firefly) <span class="due-date">Due: 2024-09-15</span></p>
+            <ul>
+                <li>Chapter 3 exercises</li>
+                <li>Practice on derivatives</li>
+                <li>Homework on algebra</li>
+                <li>Prepare for quiz</li>
+                <li>Submit review paper</li>
+            </ul>
+            <div class="homework-status-container">
+                <label><input type="checkbox" class="homework-status"> Finished</label>
             </div>
-            <div class="resizer"></div> <!-- 用于调整高度的分隔线 -->
-            <div class="todo">
-                <h2>To do</h2>
-                <!-- 内容 -->
-            </div>
-            <div class="resizer"></div> <!-- 用于调整高度的分隔线 -->
-            <div class="done">
-                <h2>Done</h2>
-                <!-- 内容 -->
-            </div>
+            <p class="expand"><a href="#">Expand</a></p>
+            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
         </div>
-    </div>
+
+        <div class="homework-item" data-subject="English" data-status="unfinished">
+            <p><strong>English - Ms. Smith</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-16</span></p>
+            <ul>
+                <li>Essay on Shakespeare</li>
+                <li>Grammar exercises</li>
+                <li>Read 'To Kill a Mockingbird'</li>
+                <li>Vocabulary quiz preparation</li>
+                <li>Submit writing assignment</li>
+            </ul>
+            <div class="homework-status-container">
+                <label><input type="checkbox" class="homework-status"> Finished</label>
+            </div>
+            <p class="expand"><a href="#">Expand</a></p>
+            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+        </div>
+
+        <div class="homework-item" data-subject="Chemistry" data-status="unfinished">
+            <p><strong>Chemistry - Dr. Brown</strong> (Submit via: Class) <span class="due-date">Due: 2024-09-17</span></p>
+            <ul>
+                <li>Chapter 5 lab report</li>
+                <li>Review periodic table</li>
+                <li>Practice chemical equations</li>
+                <li>Prepare for the test</li>
+                <li>Submit lab assignments</li>
+            </ul>
+            <div class="homework-status-container">
+                <label><input type="checkbox" class="homework-status"> Finished</label>
+            </div>
+            <p class="expand"><a href="#">Expand</a></p>
+            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+        </div>
+
+        <!-- 其余5项作业 -->
+        <div class="homework-item" data-subject="Physics" data-status="unfinished">
+            <p><strong>Physics - Dr. Adam</strong> (Submit via: Firefly) <span class="due-date">Due: 2024-09-18</span></p>
+            <ul>
+                <li>Gravity force exercises</li>
+                <li>Chapter 2 worksheet</li>
+                <li>Research on Newton's laws</li>
+                <li>Homework on thermodynamics</li>
+                <li>Group presentation</li>
+            </ul>
+            <div class="homework-status-container">
+                <label><input type="checkbox" class="homework-status"> Finished</label>
+            </div>
+            <p class="expand"><a href="#">Expand</a></p>
+            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+        </div>
+
+        <div class="homework-item" data-subject="Economics" data-status="unfinished">
+            <p><strong>Economics - Ms. Julie</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-19</span></p>
+            <ul>
+                <li>Economic theories research</li>
+                <li>Prepare for market simulation</li>
+                <li>Review supply and demand</li>
+                <li>Submit group project</li>
+                <li>Read chapter 4</li>
+            </ul>
+            <div class="homework-status-container">
+                <label><input type="checkbox" class="homework-status"> Finished</label>
+            </div>
+            <p class="expand"><a href="#">Expand</a></p>
+            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+        </div>
+
+        <!-- 更多作业项 -->
+        <div class="homework-item" data-subject="Math" data-status="unfinished">
+            <p><strong>Math - Mr. Paul</strong> (Submit via: Class) <span class="due-date">Due: 2024-09-20</span></p>
+            <ul>
+                <li>Trigonometry problems</li>
+                <li>Chapter 6 practice</li>
+                <li>Submit math project</li>
+                <li>Review lecture notes</li>
+                <li>Prepare for final exam</li>
+            </ul>
+            <div class="homework-status-container">
+                <label><input type="checkbox" class="homework-status"> Finished</label>
+            </div>
+            <p class="expand"><a href="#">Expand</a></p>
+            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+        </div>
+
+        <div class="homework-item" data-subject="Chemistry" data-status="unfinished">
+            <p><strong>Chemistry - Mr. Edward</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-21</span></p>
+            <ul>
+                <li>Chapter 10 review</li>
+                <li>Laboratory assignment</li>
+                <li>Chemical reactions practice</li>
+                <li>Mid-term test preparation</li>
+                <li>Research paper submission</li>
+            </ul>
+            <div class="homework-status-container">
+                <label><input type="checkbox" class="homework-status"> Finished</label>
+            </div>
+            <p class="expand"><a href="#">Expand</a></p>
+            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+        </div>
+    </section>
+
+    <footer>
+        <p>I don’t procrastinate. I save my homework until the last minute so that, by the time I do it, I’ll be older and wiser.</p>
+    </footer>
+
+    <button id="login-btn">Login</button>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-<script>
-    const resizers = document.querySelectorAll('.resizer');
-    let isDragging = false;
-    let currentResizer;
-
-    // 加载存储的高度信息
-    window.addEventListener('DOMContentLoaded', () => {
-        const overdueHeight = localStorage.getItem('overdueHeight');
-        const todoHeight = localStorage.getItem('todoHeight');
-        const doneHeight = localStorage.getItem('doneHeight');
-
-        if (overdueHeight) document.querySelector('.overdue').style.flexGrow = overdueHeight;
-        if (todoHeight) document.querySelector('.todo').style.flexGrow = todoHeight;
-        if (doneHeight) document.querySelector('.done').style.flexGrow = doneHeight;
-    });
-
-    resizers.forEach(resizer => {
-        resizer.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            currentResizer = resizer;
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-
-            const mainRect = document.querySelector('.main').getBoundingClientRect();
-            const todo = document.querySelector('.todo');
-            const done = document.querySelector('.done');
-            const overdue = document.querySelector('.overdue');
-
-            const heightDiff = e.clientY - mainRect.top;
-
-            if (currentResizer.previousElementSibling === overdue) {
-                overdue.style.flexGrow = heightDiff / mainRect.height;
-            } else if (currentResizer.previousElementSibling === todo) {
-                todo.style.flexGrow = heightDiff / mainRect.height;
-            }
-
-            done.style.flexGrow = 1 - (parseFloat(overdue.style.flexGrow) + parseFloat(todo.style.flexGrow));
-
-            // 存储高度信息
-            localStorage.setItem('overdueHeight', overdue.style.flexGrow);
-            localStorage.setItem('todoHeight', todo.style.flexGrow);
-            localStorage.setItem('doneHeight', done.style.flexGrow);
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-    });
-</script>

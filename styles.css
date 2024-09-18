@@ -1,132 +1,192 @@
 * {
     margin: 0;
     padding: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: url('background.png') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    background-image: url('background.png');
+    background-size: cover; /* 保证背景图片覆盖整个页面 */
+    background-repeat: no-repeat; /* 不重复 */
+    background-attachment: fixed; /* 背景固定，页面滚动时不移动 */
+    background-position: center; /* 图片居中 */
     color: white;
 }
 
-.container {
-    display: flex;
-    width: 96%;
-    height: 92%;
-    border-radius: 16px;
-    overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+header {
+    position: relative; /* 确保标题正常排列 */
+    padding-bottom: 20px; /* 给下面的内容留出空间 */
+}
+
+/* 主题色为蓝色，调高透明系数 */
+header, footer, .sidebar, .homework-list {
+    background-color: rgba(255, 255, 255, 0.2); /* 半透明蓝色背景 */
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
 }
 
 .sidebar {
-    width: 22%;
-    min-width: 250px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.header {
-    margin-bottom: 10px;
-}
-
-.sidebar h1 {
-    font-size: 1.5em;
-    margin-bottom: 5px;
-}
-
-.sidebar p {
-    font-size: 0.8em;
-    color: #bcbcbc;
-    margin-bottom: 5px;
-}
-
-.header hr {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
-    margin-bottom: 5px;
-}
-
-.content {
-    margin-top: 10px;
-}
-
-.homework, .community {
-    margin-bottom: 20px;
-}
-
-.homework h2, .community h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    color: white;
-}
-
-button {
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
+    position: absolute; /* 相对页面绝对定位 */
+    top: 112px; /* 调整到标题下面 */
+    left: 0px;
+    width: 200px;
     background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: left;
-}
-
-button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-.settings {
-    margin-top: auto;
-}
-
-.settings button {
-    width: 100%;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: left;
-}
-
-.main {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+    color: black;
     padding: 20px;
-    gap: 2px; /* 缩小模块之间的间距 */
-}
-
-.overdue, .todo, .done {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 20px;
+    height: auto;
     border-radius: 10px;
-    display: -webkit-flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2em;
-    min-height: 100px; /* 设置最小高度 */
+    z-index: 1000;
 }
 
-.resizer {
-    height: 2px; /* 隐藏调整条，使其仅占2px的空间 */
-    background-color: transparent; /* 隐藏颜色，但保持功能 */
-    cursor: row-resize;
+
+
+.category h4 {
+    margin-bottom: 10px;
+}
+
+.homework-list {
+    margin-left: 220px;
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* 调整作业框的透明度 */
+.homework-item {
+    position: relative; /* 使子元素可以使用绝对定位 */
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+}
+
+.homework-status-container {
+    position: absolute; /* 固定在作业条目右下角 */
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+.homework-status-container label {
+    display: flex;
+    align-items: center;
+}
+
+.homework-status {
+    margin-right: 5px; /* 给 "Finished" 文本和复选框之间一些间距 */
+}
+
+
+.homework-item p {
+    margin-bottom: 5px;
+}
+
+.due-date {
+    float: right;
+}
+
+.expand {
+    text-align: center;
+    margin-top: 20px;
+}
+
+footer {
+    background-color: rgba(255, 255, 255, 0.2); /* Adjust color */
+    color: black; /* Adjust text color if needed */
+    text-align: center;
+    padding: 10px;
+    position: absolute; /* Fix at the bottom */
+    bottom: 1; /* Align to the bottom */
+    width: 100%; /* Ensure full width */
+    z-index: 1000; /* 确保不会被其他元素覆盖 */
+
+}
+
+#login-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.2); /* Keep this if needed, or adjust to white if preferred */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+#login-btn:hover {
+    background-color: rgba(0, 0, 255, 0.3);;
+}
+
+#settings-btn {
+    background: none;
+    color: white;
+    border: none;
+    margin-top: 20px;
+    width: auto; /* 自动适应文本和图标宽度 */
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px; /* 给按钮内的内容更多空间 */
+    border-radius: 8px; /* 调整圆角 */
+    display: flex; /* 使用 flexbox 来排列图标和文字 */
+    align-items: center; /* 垂直居中 */
+}
+
+#settings-btn:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+#settings-btn img {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px; /* 给图标和文本之间添加间距 */
+}
+
+
+.category button, input[type="checkbox"] {
+    background-color: rgba(255, 255, 255, 0.2); /* 蓝色按钮 */
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.expand a {
+    cursor: pointer;
+    color: white;
+}
+
+
+.category button:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+/* Expand 链接丝滑动画 */
+.details {
+    display: none;
+    transition: max-height 0.5s ease-out;
+}
+
+.homework-item.expanded .details {
+    display: block;
+}
+
+.details.expanded {
+    display: block;
+    opacity: 1;
+    max-height: 200px;
+}
+
+.expand a {
+    color: white;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.expand a:hover {
+    color: cyan;
 }
