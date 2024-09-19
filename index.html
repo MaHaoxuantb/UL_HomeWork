@@ -8,165 +8,167 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>UL-Homework</h1>
-        <h2>You link with your homework</h2>
-    </header>
+    <div class="content-wrapper">
+        <header>
+            <h1>UL-Homework</h1>
+            <h2>You link with your homework</h2>
+        </header>
 
-    <section class="sidebar">
-        <h3>Categories</h3>
-        <div class="category">
-            <h4>Completion Status</h4>
-            <label><input type="checkbox" id="filter-finished"> Finished</label><br>
-            <label><input type="checkbox" id="filter-unfinished"> Unfinished</label>
-        </div>
+        <main class="main">
+            <section class="sidebar">
+                <h3>Categories</h3>
+                <div class="category">
+                    <h4>Completion Status</h4>
+                    <label><input type="checkbox" id="filter-finished"> Finished</label><br>
+                    <label><input type="checkbox" id="filter-unfinished"> Unfinished</label>
+                </div>
 
-        <div class="category">
-            <h4>Subject</h4>
-            <label><input type="checkbox" id="filter-math"> Math</label><br>
-            <label><input type="checkbox" id="filter-english"> English</label><br>
-            <label><input type="checkbox" id="filter-chemistry"> Chemistry</label><br>
-            <label><input type="checkbox" id="filter-physics"> Physics</label><br>
-            <label><input type="checkbox" id="filter-economics"> Economics</label>
-        </div>
+                <div class="category">
+                    <h4>Subject</h4>
+                    <label><input type="checkbox" id="filter-math"> Math</label><br>
+                    <label><input type="checkbox" id="filter-english"> English</label><br>
+                    <label><input type="checkbox" id="filter-chemistry"> Chemistry</label><br>
+                    <label><input type="checkbox" id="filter-physics"> Physics</label><br>
+                    <label><input type="checkbox" id="filter-economics"> Economics</label>
+                </div>
 
-        <div class="category">
-            <h4>Community</h4>
-            <p> Coming Soon :D<p>
-        </div>
+                <div class="category">
+                    <h4>Community</h4>
+                    <p> Coming Soon :D<p>
+                </div>
+            
+                <button id="settings-btn" onclick="window.location.href='settings.html'">
+                    <img src="settings-icon.png" alt="Settings" />
+                    <span>Settings</span>
+                </button>
+            
+            </section>
+
+            <section class="homework-list">
+                <h3>Homework Assignments</h3>
+                <!-- 增加8个作业条目，每个包含5条内容 -->
+                <div class="homework-item" data-subject="Math" data-status="unfinished">
+                    <p><strong>Math - Mr. John</strong> (Submit via: Firefly) <span class="due-date">Due: 2024-09-15</span></p>
+                    <ul>
+                        <li>Chapter 3 exercises</li>
+                        <li>Practice on derivatives</li>
+                        <li>Homework on algebra</li>
+                        <li>Prepare for quiz</li>
+                        <li>Submit review paper</li>
+                    </ul>
+                    <div class="homework-status-container">
+                        <label><input type="checkbox" class="homework-status"> Finished</label>
+                    </div>
+                    <p class="expand"><a href="#">Expand</a></p>
+                    <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+                </div>
+
+                <div class="homework-item" data-subject="English" data-status="unfinished">
+                    <p><strong>English - Ms. Smith</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-16</span></p>
+                    <ul>
+                        <li>Essay on Shakespeare</li>
+                        <li>Grammar exercises</li>
+                        <li>Read 'To Kill a Mockingbird'</li>
+                        <li>Vocabulary quiz preparation</li>
+                        <li>Submit writing assignment</li>
+                    </ul>
+                    <div class="homework-status-container">
+                        <label><input type="checkbox" class="homework-status"> Finished</label>
+                    </div>
+                    <p class="expand"><a href="#">Expand</a></p>
+                    <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+                </div>
+
+                <div class="homework-item" data-subject="Chemistry" data-status="unfinished">
+                    <p><strong>Chemistry - Dr. Brown</strong> (Submit via: Class) <span class="due-date">Due: 2024-09-17</span></p>
+                    <ul>
+                        <li>Chapter 5 lab report</li>
+                        <li>Review periodic table</li>
+                        <li>Practice chemical equations</li>
+                        <li>Prepare for the test</li>
+                        <li>Submit lab assignments</li>
+                    </ul>
+                    <div class="homework-status-container">
+                        <label><input type="checkbox" class="homework-status"> Finished</label>
+                    </div>
+                    <p class="expand"><a href="#">Expand</a></p>
+                    <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+                </div>
+
+                <!-- 其余5项作业 -->
+                <div class="homework-item" data-subject="Physics" data-status="unfinished">
+                    <p><strong>Physics - Dr. Adam</strong> (Submit via: Firefly) <span class="due-date">Due: 2024-09-18</span></p>
+                    <ul>
+                        <li>Gravity force exercises</li>
+                        <li>Chapter 2 worksheet</li>
+                        <li>Research on Newton's laws</li>
+                        <li>Homework on thermodynamics</li>
+                        <li>Group presentation</li>
+                    </ul>
+                    <div class="homework-status-container">
+                        <label><input type="checkbox" class="homework-status"> Finished</label>
+                    </div>
+                    <p class="expand"><a href="#">Expand</a></p>
+                    <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+                </div>
+
+                <div class="homework-item" data-subject="Economics" data-status="unfinished">
+                    <p><strong>Economics - Ms. Julie</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-19</span></p>
+                    <ul>
+                        <li>Economic theories research</li>
+                        <li>Prepare for market simulation</li>
+                        <li>Review supply and demand</li>
+                        <li>Submit group project</li>
+                        <li>Read chapter 4</li>
+                    </ul>
+                    <div class="homework-status-container">
+                        <label><input type="checkbox" class="homework-status"> Finished</label>
+                    </div>
+                    <p class="expand"><a href="#">Expand</a></p>
+                    <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+                </div>
+
+                <!-- 更多作业项 -->
+                <div class="homework-item" data-subject="Math" data-status="unfinished">
+                    <p><strong>Math - Mr. Paul</strong> (Submit via: Class) <span class="due-date">Due: 2024-09-20</span></p>
+                    <ul>
+                        <li>Trigonometry problems</li>
+                        <li>Chapter 6 practice</li>
+                        <li>Submit math project</li>
+                        <li>Review lecture notes</li>
+                        <li>Prepare for final exam</li>
+                    </ul>
+                    <div class="homework-status-container">
+                        <label><input type="checkbox" class="homework-status"> Finished</label>
+                    </div>
+                    <p class="expand"><a href="#">Expand</a></p>
+                    <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+                </div>
+
+                <div class="homework-item" data-subject="Chemistry" data-status="unfinished">
+                    <p><strong>Chemistry - Mr. Edward</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-21</span></p>
+                    <ul>
+                        <li>Chapter 10 review</li>
+                        <li>Laboratory assignment</li>
+                        <li>Chemical reactions practice</li>
+                        <li>Mid-term test preparation</li>
+                        <li>Research paper submission</li>
+                    </ul>
+                    <div class="homework-status-container">
+                        <label><input type="checkbox" class="homework-status"> Finished</label>
+                    </div>
+                    <p class="expand"><a href="#">Expand</a></p>
+                    <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>I don’t procrastinate. I save my homework until the last minute so that, by the time I do it, I’ll be older and wiser.</p>
+        </footer>
+    </div>
     
-        <button id="settings-btn">
-            <img src="settings-icon.png" alt="Settings" />
-            <span>Settings</span> <!-- 添加 "Settings" 文本 -->
-        </button>
-        
-    
-    </section>
-
-    <section class="homework-list">
-        <h3>Homework Assignments</h3>
-        <!-- 增加8个作业条目，每个包含5条内容 -->
-        <div class="homework-item" data-subject="Math" data-status="unfinished">
-            <p><strong>Math - Mr. John</strong> (Submit via: Firefly) <span class="due-date">Due: 2024-09-15</span></p>
-            <ul>
-                <li>Chapter 3 exercises</li>
-                <li>Practice on derivatives</li>
-                <li>Homework on algebra</li>
-                <li>Prepare for quiz</li>
-                <li>Submit review paper</li>
-            </ul>
-            <div class="homework-status-container">
-                <label><input type="checkbox" class="homework-status"> Finished</label>
-            </div>
-            <p class="expand"><a href="#">Expand</a></p>
-            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
-        </div>
-
-        <div class="homework-item" data-subject="English" data-status="unfinished">
-            <p><strong>English - Ms. Smith</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-16</span></p>
-            <ul>
-                <li>Essay on Shakespeare</li>
-                <li>Grammar exercises</li>
-                <li>Read 'To Kill a Mockingbird'</li>
-                <li>Vocabulary quiz preparation</li>
-                <li>Submit writing assignment</li>
-            </ul>
-            <div class="homework-status-container">
-                <label><input type="checkbox" class="homework-status"> Finished</label>
-            </div>
-            <p class="expand"><a href="#">Expand</a></p>
-            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
-        </div>
-
-        <div class="homework-item" data-subject="Chemistry" data-status="unfinished">
-            <p><strong>Chemistry - Dr. Brown</strong> (Submit via: Class) <span class="due-date">Due: 2024-09-17</span></p>
-            <ul>
-                <li>Chapter 5 lab report</li>
-                <li>Review periodic table</li>
-                <li>Practice chemical equations</li>
-                <li>Prepare for the test</li>
-                <li>Submit lab assignments</li>
-            </ul>
-            <div class="homework-status-container">
-                <label><input type="checkbox" class="homework-status"> Finished</label>
-            </div>
-            <p class="expand"><a href="#">Expand</a></p>
-            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
-        </div>
-
-        <!-- 其余5项作业 -->
-        <div class="homework-item" data-subject="Physics" data-status="unfinished">
-            <p><strong>Physics - Dr. Adam</strong> (Submit via: Firefly) <span class="due-date">Due: 2024-09-18</span></p>
-            <ul>
-                <li>Gravity force exercises</li>
-                <li>Chapter 2 worksheet</li>
-                <li>Research on Newton's laws</li>
-                <li>Homework on thermodynamics</li>
-                <li>Group presentation</li>
-            </ul>
-            <div class="homework-status-container">
-                <label><input type="checkbox" class="homework-status"> Finished</label>
-            </div>
-            <p class="expand"><a href="#">Expand</a></p>
-            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
-        </div>
-
-        <div class="homework-item" data-subject="Economics" data-status="unfinished">
-            <p><strong>Economics - Ms. Julie</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-19</span></p>
-            <ul>
-                <li>Economic theories research</li>
-                <li>Prepare for market simulation</li>
-                <li>Review supply and demand</li>
-                <li>Submit group project</li>
-                <li>Read chapter 4</li>
-            </ul>
-            <div class="homework-status-container">
-                <label><input type="checkbox" class="homework-status"> Finished</label>
-            </div>
-            <p class="expand"><a href="#">Expand</a></p>
-            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
-        </div>
-
-        <!-- 更多作业项 -->
-        <div class="homework-item" data-subject="Math" data-status="unfinished">
-            <p><strong>Math - Mr. Paul</strong> (Submit via: Class) <span class="due-date">Due: 2024-09-20</span></p>
-            <ul>
-                <li>Trigonometry problems</li>
-                <li>Chapter 6 practice</li>
-                <li>Submit math project</li>
-                <li>Review lecture notes</li>
-                <li>Prepare for final exam</li>
-            </ul>
-            <div class="homework-status-container">
-                <label><input type="checkbox" class="homework-status"> Finished</label>
-            </div>
-            <p class="expand"><a href="#">Expand</a></p>
-            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
-        </div>
-
-        <div class="homework-item" data-subject="Chemistry" data-status="unfinished">
-            <p><strong>Chemistry - Mr. Edward</strong> (Submit via: Dingtalk) <span class="due-date">Due: 2024-09-21</span></p>
-            <ul>
-                <li>Chapter 10 review</li>
-                <li>Laboratory assignment</li>
-                <li>Chemical reactions practice</li>
-                <li>Mid-term test preparation</li>
-                <li>Research paper submission</li>
-            </ul>
-            <div class="homework-status-container">
-                <label><input type="checkbox" class="homework-status"> Finished</label>
-            </div>
-            <p class="expand"><a href="#">Expand</a></p>
-            <div class="details"></div> <!-- 清空内容，或者删除整个 <div class="details"> -->
-        </div>
-    </section>
-
-    <footer>
-        <p>I don’t procrastinate. I save my homework until the last minute so that, by the time I do it, I’ll be older and wiser.</p>
-    </footer>
-
-    <button id="login-btn">Login</button>
-
+    <button id="login-btn" onclick="window.location.href='login.html'">Login</button>
     <script src="script.js"></script>
 </body>
 </html>

@@ -4,6 +4,31 @@
     box-sizing: border-box;
 }
 
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* 确保内容充满页面 */
+}
+
+main {
+    display: flex;
+    flex: 1; /* 使侧边栏和作业列表保持在同一行 */
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    align-items: flex-start; /* 保证两者上方对齐 */
+}
+
 body {
     font-family: 'Zen Maru Gothic', sans-serif;
     background-image: url('background.png');
@@ -15,7 +40,7 @@ body {
 }
 
 header {
-    position: relative; /* 确保标题正常排列 */
+    /*position: relative; 确保标题正常排列 */
     padding-bottom: 20px; /* 给下面的内容留出空间 */
 }
 
@@ -28,16 +53,18 @@ header, footer, .sidebar, .homework-list {
 }
 
 .sidebar {
-    position: absolute; /* 相对页面绝对定位 */
-    top: 112px; /* 调整到标题下面 */
-    left: 0px;
+    top: 0; /* 调整到标题下面 */
+    left: 0;
     width: 200px;
     background-color: rgba(255, 255, 255, 0.2);
     color: black;
     padding: 20px;
     height: auto;
     border-radius: 10px;
-    z-index: 1000;
+    /*z-index: 1000;*/
+    margin-bottom: 20px;
+    flex-shrink: 0; /* 防止侧边栏缩小 */
+    margin-right: 5px; /* 删除默认的右侧空隙 */
 }
 
 
@@ -47,9 +74,10 @@ header, footer, .sidebar, .homework-list {
 }
 
 .homework-list {
+    flex: 1; /* 作业列表会占据剩余空间 */
     margin-left: 220px;
     padding: 20px;
-    flex: 1;
+    margin-left: 5px; /* 消除左边距 */
     overflow-y: auto;
 }
 
@@ -94,15 +122,13 @@ header, footer, .sidebar, .homework-list {
 }
 
 footer {
-    background-color: rgba(255, 255, 255, 0.2); /* Adjust color */
-    color: black; /* Adjust text color if needed */
+    background-color: rgba(255, 255, 255, 0.2); /* 白色背景 */
+    color: black; /* 黑色文字 */
     text-align: center;
     padding: 10px;
-    position: absolute; /* Fix at the bottom */
-    bottom: 1; /* Align to the bottom */
-    width: 100%; /* Ensure full width */
-    z-index: 1000; /* 确保不会被其他元素覆盖 */
-
+    position: relative; /* 不再使用固定定位，改为相对页面内容 */
+    margin-top: auto;
+    /*clear: both; /* 确保 footer 显示在内容下面 */
 }
 
 #login-btn {
