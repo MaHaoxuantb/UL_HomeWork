@@ -101,3 +101,38 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+function openSettings() {
+    document.getElementById('settings-modal').style.display = 'block';
+    document.body.style.filter = 'blur(5px)'; // 虚化index页面
+}
+
+function closeSettings() {
+    document.getElementById('settings-modal').style.display = 'none';
+    document.body.style.filter = 'none'; // 取消虚化
+}
+
+// Light/Dark模式切换
+const modeToggle = document.getElementById('mode-toggle');
+const modeLabel = document.getElementById('mode-label');
+
+// 获取所有需要变换颜色的透明框
+const boxes = document.querySelectorAll('.modal-content, .transparent-box');
+
+modeToggle.addEventListener('change', function () {
+    if (modeToggle.checked) {
+        // Dark Mode
+        modeLabel.textContent = 'Dark Mode';
+        boxes.forEach(box => {
+            box.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'; // 黑色透明框
+            box.style.color = 'white'; // 白色文字
+        });
+    } else {
+        // Light Mode
+        modeLabel.textContent = 'Light Mode';
+        boxes.forEach(box => {
+            box.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'; // 白色透明框
+            box.style.color = 'black'; // 黑色文字
+        });
+    }
+});
