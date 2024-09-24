@@ -6,26 +6,44 @@
     <title>Student Management</title>
 </head>
 <body>
-    <h1>Add Student</h1>
-    <form id="studentForm">
-        <label>Student ID: <input type="text" id="studentId"></label><br>
-        <label>Name: <input type="text" id="name"></label><br>
-        <label>Email: <input type="text" id="email"></label><br>
-        <label>Class IDs (comma separated): <input type="text" id="classIds"></label><br>
-        <label>Age: <input type="number" id="age"></label><br>
-        <label>Gender: <input type="text" id="gender"></label><br>
-        <label>Phone Number: <input type="text" id="phoneNumber"></label><br>
-        <button type="submit">Add Student</button>
+    <h1>User Login</h1>
+    <form id="loginForm">
+        <label for="username">Student ID:</label>
+        <input type="text" id="username"><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password"><br>
+        <button type="submit">Login</button>
     </form>
 
-    <h1>Get Student Assignments</h1>
+    <h1>Add Assignment</h1>
     <form id="assignmentForm">
-        <label>Student ID: <input type="text" id="queryStudentId"></label><br>
+        <label for="assignmentTitle">Assignment Title:</label>
+        <input type="text" id="assignmentTitle"><br>
+        <label for="assignmentContent">Assignment Content:</label>
+        <textarea id="assignmentContent"></textarea><br>
+        <label for="classId">Class ID:</label>
+        <input type="text" id="classId"><br>
+        <label for="dueDate">Due Date:</label>
+        <input type="date" id="dueDate"><br>
+        <button type="submit">Add Assignment</button>
+    </form>
+
+    <h1>Get Assignments</h1>
+    <form id="assignmentsForm">
+        <label for="studentIdForAssignments">Student ID:</label>
+        <input type="text" id="studentIdForAssignments"><br>
         <button type="submit">Get Assignments</button>
+    </form>
+
+    <h1>Get Student Info</h1>
+    <form id="studentInfoForm">
+        <label for="studentIdForInfo">Student ID:</label>
+        <input type="text" id="studentIdForInfo"><br>
+        <button type="submit">Get Student Info</button>
     </form>
 
     <div id="result"></div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="static/script.js"></script>
 </body>
 </html>

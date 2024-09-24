@@ -1,64 +1,109 @@
-// 处理添加学生
-document.getElementById('studentForm').addEventListener('submit', function(event) {
+let token = '';  // 保存 JWT 令牌
+
+// 用户登录
+document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-    const studentId = document.getElementById('studentId').value;
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const classIds = document.getElementById('classIds').value.split(',');
-    const age = document.getElementById('age').value;
-    const gender = document.getElementById('gender').value;
-    const phoneNumber = document.getElementById('phoneNumber').value;
-
-    fetch('http://0.0.0.0:8000/add_student', {  // 更新为运行 Flask 的 URL
+    fetch('http://127.0.0.1:8000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            student_id: studentId,
-            name: name,
-            email: email,
-            class_ids: classIds,
-            age: age,
-            gender: gender,
-            phone_number: phoneNumber
+            username: username,
+            password: password
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.access_token) {
+            token = data.access_token;  // 保存 JWT 令牌
+            alert('Logged in successfully!');
+        } else {
+            alert('Login failed');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+// 添加作业
+document.getElementById('assignmentForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const assignment_title = document.getElementById('assignmentTitle').value;
+    const assignment_content = document.getElementById('assignmentContent').value;
+    const class_id = document.getElementById('classId').value;
+    const due_date = document.getElementById('dueDate').value;
+
+    fetch('http://127.0.0.1:8000/add_assignment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            class_id: class_id,
+            assignment_title: assignment_title,
+            assignment_content: assignment_content,
+            due_date: due_date
         })
     })
     .then(response => response.json())
     .then(data => {
         alert(data.message);
-    });
+    })
+    .catch(error => console.error('Error:', error));
 });
 
-// 处理获取学生作业
-document.getElementById('assignmentForm').addEventListener('submit', function(event) {
+// 获取学生的作业信息
+document.getElementById('assignmentsForm').addEventListener('submit', function(event) {
     event.preventDefault();
+    const student_id = document.getElementById('studentIdForAssignments').value;
 
-    const studentId = document.getElementById('queryStudentId').value;
-
-    fetch('/get_student_assignments', {
+    fetch('http://127.0.0.1:8000/get_assignments', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-            student_id: studentId
+            student_id: student_id
         })
     })
     .then(response => response.json())
     .then(data => {
-        let resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = '';
-
-        if (data.error) {
-            resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
-        } else if (data.message) {
-            resultDiv.innerHTML = `<p>${data.message}</p>`;
-        } else {
+        if (data.length) {
+            document.getElementById('result').innerHTML = `<h2>Assignments for ${student_id}</h2>`;
             data.forEach(assignment => {
-                resultDiv.innerHTML += `<p>Assignment: ${JSON.stringify(assignment)}</p>`;
+                document.getElementById('result').innerHTML += `
+                    <p>Assignment Title: ${assignment['assignment-title']}, Status: ${assignment['completion-status']}, Due Date: ${assignment['due-date']}</p>`;
             });
+        } else {
+            alert('No assignments found.');
         }
-    });
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+// 获取学生信息
+document.getElementById('studentInfoForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const student_id = document.getElementById('studentIdForInfo').value;
+
+    fetch('http://127.0.0.1:8000/get_student_info', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            student_id: student_id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('result').innerHTML = `<h2>Student Info:</h2><p>${JSON.stringify(data)}</p>`;
+    })
+    .catch(error => console.error('Error:', error));
 });
