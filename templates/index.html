@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+</head>
+<body>
+    <h1>Add Student</h1>
+    <form id="studentForm">
+        <label>Student ID: <input type="text" id="studentId"></label><br>
+        <label>Name: <input type="text" id="name"></label><br>
+        <label>Email: <input type="text" id="email"></label><br>
+        <label>Class IDs (comma separated): <input type="text" id="classIds"></label><br>
+        <label>Age: <input type="number" id="age"></label><br>
+        <label>Gender: <input type="text" id="gender"></label><br>
+        <label>Phone Number: <input type="text" id="phoneNumber"></label><br>
+        <button type="submit">Add Student</button>
+    </form>
+
+    <h1>Get Student Assignments</h1>
+    <form id="assignmentForm">
+        <label>Student ID: <input type="text" id="queryStudentId"></label><br>
+        <button type="submit">Get Assignments</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
