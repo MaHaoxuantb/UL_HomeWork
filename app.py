@@ -110,5 +110,40 @@ def add_assignment():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# 标记作业为已完成API
+@app.route('/complete_assignment', methods=['POST'])
+@jwt_required()
+def complete_assignment():
+    data = request.json
+    student_id = data.get('student_id')
+    class_id = data.get('class_id')
+    assignment_id = data.get('assignment_id')
+    submission_time = datetime.now().isoformat()
+
+    try:
+        response = assignments_table.update_item(
+            Key={
+                'student-id': student_id,
+                'class-id#assignment-id': f'{class_id}#{assignment_id}'
+            },
+            UpdateExpression="SET #status = :status, #submission_time = :submission_time",
+            ExpressionAttributeNames={
+                '#status': 'completion-status',
+                '#submission_time': 'submission-time'
+            },
+            ExpressionAttributeValues={
+                ':status': 'Complete',
+                ':submission_time': submission_time
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+
+        if 'Attributes' in response:
+            return jsonify({'message': 'Assignment marked as complete', 'updated': response['Attributes']}), 200
+        else:
+            return jsonify({'message': 'Assignment not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
