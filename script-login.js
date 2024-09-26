@@ -95,5 +95,3 @@ function hideError() {
     errorMessage.style.display = 'none'; // 隐藏错误信息框
     errorIcon.style.display = 'none'; // 隐藏error图标
 }
-
-

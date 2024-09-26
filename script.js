@@ -4,6 +4,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const filterUnfinished = document.getElementById('filter-unfinished');
   const filterSubjects = document.querySelectorAll('.category input[type="checkbox"]:not(#filter-finished, #filter-unfinished)');
 
+  homeworkItems.forEach((item, index) => {
+        const checkbox = item.querySelector('.homework-status');
+        const storedStatus = localStorage.getItem(`homeworkStatus${index}`);
+        if (storedStatus === 'true') {
+            checkbox.checked = true;
+        }
+        checkbox.addEventListener('change', function () {
+            localStorage.setItem(`homeworkStatus${index}`, checkbox.checked);
+            filterByStatus(); // 更新过滤状态
+        });
+    });
+
   // 初始排序：根据截止日期
   function sortHomework() {
       const container = document.querySelector('.homework-list');
@@ -305,27 +317,27 @@ const $ = s => {
   
   // 星星闪烁js交互部分
   // 获取所有星星元素，并随机排序星星数组
-  // let starArray = [...$('.star')].sort(_ => 0.5 - Math.random());
+   let starArray = [...$('.star')].sort(_ => 0.5 - Math.random());
   
   // // 定义缩放动画时长和暂停时间
-  // const twinkleDuration = 0.5; // 缩放动画时长（秒）
-  // const pauseDuration = 2; // 暂停时间（秒）
+   const twinkleDuration = 0.5; // 缩放动画时长（秒）
+   const pauseDuration = 2; // 暂停时间（秒）
   
-  // function twinkleStars() { 
-  //   starArray.forEach((star, index) => {
-  //     setTimeout(() => {
-  //       star.classList.add('twinkle');
-  //       setTimeout(() => {
-  //         star.classList.remove('twinkle');
-  //         if (index === starArray.length - 1) {
-  //           setTimeout(twinkleStars, pauseDuration * 1000); // 在每次调用之间添加 2 秒的间隔
-  //         }
-  //       }, twinkleDuration * 1000);
-  //     }, (index * (twinkleDuration + pauseDuration)) * 1000);
-  //   });
-  // }
+   function twinkleStars() { 
+     starArray.forEach((star, index) => {
+       setTimeout(() => {
+         star.classList.add('twinkle');
+         setTimeout(() => {
+           star.classList.remove('twinkle');
+           if (index === starArray.length - 1) {
+             setTimeout(twinkleStars, pauseDuration * 1000); // 在每次调用之间添加 2 秒的间隔
+           }
+         }, twinkleDuration * 1000);
+       }, (index * (twinkleDuration + pauseDuration)) * 1000);
+     });
+   }
   
-  // twinkleStars(); // 第一次调用函数开始闪烁
+   twinkleStars(); // 第一次调用函数开始闪烁
   
   // 云层浮动动画效果
   // 定义一个获取随机方向的函数，随机选择'2px'或'-2px'
