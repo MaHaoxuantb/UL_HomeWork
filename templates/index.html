@@ -3,47 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management</title>
+    <title>UL-Homework</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap">
+    <link rel="stylesheet" href="../static/styles.css">
+
 </head>
 <body>
-    <h1>User Login</h1>
-    <form id="loginForm">
-        <label for="username">Student ID:</label>
-        <input type="text" id="username"><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password"><br>
-        <button type="submit">Login</button>
-    </form>
+    <div class="content-wrapper">
+        <header>
+            <h1>UL-Homework</h1>
+            <h2>You link with your homework</h2>
+        </header>
 
-    <h1>Add Assignment</h1>
-    <form id="assignmentForm">
-        <label for="assignmentTitle">Assignment Title:</label>
-        <input type="text" id="assignmentTitle"><br>
-        <label for="assignmentContent">Assignment Content:</label>
-        <textarea id="assignmentContent"></textarea><br>
-        <label for="classId">Class ID:</label>
-        <input type="text" id="classId"><br>
-        <label for="dueDate">Due Date:</label>
-        <input type="date" id="dueDate"><br>
-        <button type="submit">Add Assignment</button>
-    </form>
+        <main class="main">
+            <section class="sidebar">
+                <h3>Categories</h3>
+                <div class="category">
+                    <h4>Completion Status</h4>
+                    <label><input type="checkbox" id="filter-finished"> Finished</label><br>
+                    <label><input type="checkbox" id="filter-unfinished"> Unfinished</label>
+                </div>
 
-    <h1>Get Assignments</h1>
-    <form id="assignmentsForm">
-        <label for="studentIdForAssignments">Student ID:</label>
-        <input type="text" id="studentIdForAssignments"><br>
-        <button type="submit">Get Assignments</button>
-    </form>
+                <div class="category">
+                    <h4>Subject</h4>
+                    <label><input type="checkbox" id="filter-math"> Math</label><br>
+                    <label><input type="checkbox" id="filter-english"> English</label><br>
+                    <label><input type="checkbox" id="filter-chemistry"> Chemistry</label><br>
+                    <label><input type="checkbox" id="filter-physics"> Physics</label><br>
+                    <label><input type="checkbox" id="filter-economics"> Economics</label>
+                </div>
 
-    <h1>Get Student Info</h1>
-    <form id="studentInfoForm">
-        <label for="studentIdForInfo">Student ID:</label>
-        <input type="text" id="studentIdForInfo"><br>
-        <button type="submit">Get Student Info</button>
-    </form>
+                <div class="category">
+                    <h4>Community</h4>
+                    <p> Coming Soon :D<p>
+                </div>
+            
+                <button id="settings-btn" onclick="window.location.href='settings.html'">
+                    <img src="../static/settings-icon.png" alt="Settings" />
+                    <span>Settings</span>
+                </button>
+            </section>
 
-    <div id="result"></div>
+            <section class="homework-list" id="homeworkContainer">
+                <h3>Homework Assignments</h3>
+                <!-- 作业项目将通过 script.js 动态生成 -->
+            </section>
+        </main>
 
-    <script src="static/script.js"></script>
+        <footer>
+            <p>I don’t procrastinate. I save my homework until the last minute so that, by the time I do it, I’ll be older and wiser.</p>
+        </footer>
+    </div>
+    
+    
+    <button id="login-btn" onclick="window.location.href='/login'">Login</button>
+    
+    <script src="../static/script.js"></script>
 </body>
 </html>
