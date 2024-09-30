@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (response.ok) {
                 const homeworkList = await response.json();
                 displayHomework(homeworkList); // 调用函数显示作业
-                monitorHomeworkStatus(); // 开始监听作业状态
             } else {
                 console.error('Failed to fetch homework');
                 alert('Failed to load assignments.');
@@ -32,8 +31,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 });
 
-let homeworkStatusBaseline = {}; // 存储初始的作业状态
-
 function displayHomework(homeworkList) {
     const homeworkContainer = document.getElementById('homeworkContainer');
     homeworkContainer.innerHTML = ''; // 清空现有内容
@@ -41,9 +38,10 @@ function displayHomework(homeworkList) {
     homeworkList.forEach((item, index) => {
         const homeworkItem = document.createElement('div');
         homeworkItem.className = 'homework-item';
-        homeworkItem.setAttribute('data-assignment-id', item['assignment-id']); // 设置 assignment-id 属性
+        homeworkItem.setAttribute('data-subject', item['subject']);
+        homeworkItem.setAttribute('data-status', item['completion-status']); // 直接使用 completion-status 的值
         homeworkItem.setAttribute('data-class-id', item['class-id']); // 设置 class-id 属性
-        homeworkItem.setAttribute('data-status', item['completion-status']); // 设置完成状态
+        homeworkItem.setAttribute('data-assignment-id', item['assignment-id']); // 设置 assignment-id 属性
 
         // 获取作业内容的所有行
         const contentLines = item['assignment-content'].split('\n');
@@ -65,86 +63,77 @@ function displayHomework(homeworkList) {
             </div>
         `;
 
-        // 初始化基准状态
-        homeworkStatusBaseline[item['assignment-id']] = item['completion-status'];
-
         // 添加作业到容器中
         homeworkContainer.appendChild(homeworkItem);
-    });
 
-    // 添加监听展开/收起按钮和其他功能
-    setupExpandButtons();
-    sortHomework(); // 初始显示时进行排序
-}
+        // 当复选框状态变化时，触发API调用以通知后端
+        const checkbox = homeworkItem.querySelector('.homework-status');
+        checkbox.addEventListener('change', function () {
+            const classId = homeworkItem.getAttribute('data-class-id'); // 从元素属性中获取 class-id
+            const assignmentId = homeworkItem.getAttribute('data-assignment-id'); // 从元素属性中获取 assignment-id
+            const studentId = localStorage.getItem('studentId'); // 从 localStorage 获取 studentId
 
-function setupExpandButtons() {
-    const homeworkItems = document.querySelectorAll('.homework-item');
-    homeworkItems.forEach(item => {
-        const expandButton = item.querySelector('.expand-button');
+            // 如果复选框被勾选，则发送完成作业请求
+            if (checkbox.checked) {
+                completeAssignment(studentId, classId, assignmentId, 'Complete');
+            } else {
+                completeAssignment(studentId, classId, assignmentId, 'Incomplete');
+            }
+        });
+
+        // 添加展开按钮的事件监听
+        const expandButton = homeworkItem.querySelector('.expand-button');
         if (expandButton) {
             expandButton.addEventListener('click', () => {
-                const fullContent = item.querySelector('.full-content');
+                const fullContent = homeworkItem.querySelector('.full-content');
                 if (fullContent.style.display === 'none') {
-                    fullContent.style.display = 'block';
-                    expandButton.textContent = 'Collapse';
+                    fullContent.style.display = 'block'; // 显示完整内容
+                    expandButton.textContent = 'Collapse'; // 修改按钮文本
+                    homeworkItem.classList.add('expanded'); // 添加类以供CSS使用
+                    
+                    // 将按钮移动到展开内容的底部
+                    fullContent.appendChild(expandButton.parentElement);
                 } else {
-                    fullContent.style.display = 'none';
-                    expandButton.textContent = 'Expand';
+                    fullContent.style.display = 'none'; // 隐藏完整内容
+                    expandButton.textContent = 'Expand'; // 修改按钮文本
+                    homeworkItem.classList.remove('expanded'); // 移除类以供CSS使用
+                    
+                    // 将按钮移动回原来的位置
+                    homeworkItem.insertBefore(expandButton.parentElement, fullContent);
                 }
             });
         }
     });
+
+    // 初始排序和过滤
+    sortHomework();
+    filterByStatus();
 }
 
-function monitorHomeworkStatus() {
-    setInterval(() => {
-        const homeworkItems = document.querySelectorAll('.homework-item');
-
-        homeworkItems.forEach(item => {
-            const assignmentId = item.getAttribute('data-assignment-id');
-            const classId = item.getAttribute('data-class-id');
-            const checkbox = item.querySelector('.homework-status');
-            const currentStatus = checkbox.checked ? 'Complete' : 'Incomplete';
-
-            // 比较当前状态和基准状态
-            if (homeworkStatusBaseline[assignmentId] !== currentStatus) {
-                // 状态有变化，发送请求到后端
-                updateAssignmentStatus(classId, assignmentId, currentStatus);
-
-                // 更新基准状态
-                homeworkStatusBaseline[assignmentId] = currentStatus;
-            }
-        });
-
-        // 状态检查后重新排序
-        sortHomework();
-    }, 30000); // 每30秒检查一次状态
-}
-
-function updateAssignmentStatus(classId, assignmentId, status) {
-    const studentId = localStorage.getItem('studentId'); // 从 localStorage 获取 studentId
+// 完成作业的API调用函数
+function completeAssignment(studentId, classId, assignmentId, status) {
     fetch('/complete_assignment', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` // 假设JWT存储在本地
-        },
-        body: JSON.stringify({
-            student_id: studentId,
-            class_id: classId,
-            assignment_id: assignmentId,
-            status: status
-        })
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` // 假设JWT存储在本地
+      },
+      body: JSON.stringify({
+        student_id: studentId,
+        class_id: classId,
+        assignment_id: assignmentId,
+        status: status // 发送作业的完成状态
+      })
     })
     .then(response => {
-        if (response.ok) {
-            console.log(`Assignment ${assignmentId} status updated to ${status}`);
-        } else {
-            console.error('Error updating assignment status');
-        }
+      if (response.ok) {
+        console.log('作业状态已更新');
+      } else {
+        console.error('更新作业状态时出错');
+      }
     })
     .catch(error => {
-        console.error('Network or server error:', error);
+      console.error('网络或服务器错误:', error);
     });
 }
 
