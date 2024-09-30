@@ -19,6 +19,10 @@ assignments_table = dynamodb.Table('AssignmentsCompletion')  # 作业完成情�
 def index():
     return render_template('index.html')
 
+@app.route('/login', methods=['GET'])
+def login_page():
+    return render_template('login.html')
+
 # 用户登录API
 @app.route('/login', methods=['POST'])
 def login():
@@ -110,7 +114,7 @@ def add_assignment():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# 标记作业为已完成API
+# 标记作业为已完成或未完成的 API
 @app.route('/complete_assignment', methods=['POST'])
 @jwt_required()
 def complete_assignment():
@@ -118,9 +122,11 @@ def complete_assignment():
     student_id = data.get('student_id')
     class_id = data.get('class_id')
     assignment_id = data.get('assignment_id')
+    status = data.get('status')  # 获取前端传递的状态
     submission_time = datetime.now().isoformat()
 
     try:
+        # 更新作业的 completion-status 字段为传递的 status (Complete 或 Incomplete)
         response = assignments_table.update_item(
             Key={
                 'student-id': student_id,
@@ -132,18 +138,19 @@ def complete_assignment():
                 '#submission_time': 'submission-time'
             },
             ExpressionAttributeValues={
-                ':status': 'Complete',
+                ':status': status,  # 设置为传递的 status (Complete 或 Incomplete)
                 ':submission_time': submission_time
             },
             ReturnValues="UPDATED_NEW"
         )
 
         if 'Attributes' in response:
-            return jsonify({'message': 'Assignment marked as complete', 'updated': response['Attributes']}), 200
+            return jsonify({'message': f'Assignment marked as {status}', 'updated': response['Attributes']}), 200
         else:
             return jsonify({'message': 'Assignment not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
