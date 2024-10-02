@@ -6,11 +6,13 @@
     <title>UL-Homework</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap">
     <link rel="stylesheet" href="../static/styles.css">
+    <link rel="icon" href="../static/logo.ico" type="image/x-icon">
 
 </head>
 <body>
     <div class="content-wrapper">
         <header>
+            <img src="../static/logo.png" alt="Logo" id="logo-image"> <!-- 将 logo 放到标题前面 -->
             <h1>UL-Homework</h1>
             <h2>You link with your homework</h2>
         </header>
@@ -55,8 +57,23 @@
         </footer>
     </div>
     
-    
+    <!-- 默认显示 login 按钮 -->
     <button id="login-btn" onclick="window.location.href='/login'">Login</button>
+    
+    <!-- 用户登录后的信息和按钮 -->
+    <div class="user-container" style="visibility: hidden; opacity: 0;">
+        <div id="user-info">
+            Hi, <span id="user-name"></span>
+            <div id="triangle"></div> <!-- 添加小三角形符号 -->
+        </div>
+        <!-- 新的添加作业按钮 -->
+        <div id="add-assignment-option">
+            Add Assignment
+        </div>
+        <div id="logout-option">
+            Logout
+        </div>
+    </div>
     
     <script src="../static/script.js"></script>
 </body>

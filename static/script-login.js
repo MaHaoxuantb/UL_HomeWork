@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
                 if (data.access_token) {
                     const token = data.access_token;  // 保存 JWT 令牌
-                    alert('Logged in successfully!');
+                    //alert('Logged in successfully!');
                     localStorage.setItem('studentId', studentId);
                     localStorage.setItem('jwtToken', token);
                     console.log('Token stored in localStorage:', token);
