@@ -29,25 +29,59 @@ def add_assignment_page():
     return render_template('add-assignment.html')
 
 
-# 用户登录API
+# 添加学生API
+@app.route('/add_student', methods=['POST'])
+def add_student():
+    data = request.json
+    student_id = data.get('student_id')
+    password = data.get('password')
+    hashed_password = generate_password_hash(password)  # 存储密码的哈希值
+    name = data.get('name')
+    email = data.get('email')
+    class_ids = data.get('class_ids')
+    age = data.get('age')
+    gender = data.get('gender')
+    phone_number = data.get('phone_number')
+    enrollment_date = datetime.now().isoformat()  # 记录入学日期
+    
+    try:
+        students_table.put_item(
+            Item={
+                'student-id': student_id,   # 主键：学生ID
+                'password': hashed_password,  # 存储密码哈希值
+                'name': name,               # 学生姓名
+                'email': email,             # 学生邮箱
+                'class-ids': class_ids,     # 学生注册的班级列表
+                'enrollment-date': enrollment_date,  # 入学日期
+                'age': age,                 # 学生年龄
+                'gender': gender,           # 学生性别
+                'phone-number': phone_number  # 学生电话号码
+            }
+        )
+        return jsonify({'message': 'Student added successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# 学生登录API
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    student_id = data.get('username', None)  # 使用 student_id 作为用户名
-    key = data.get('password', None)  # 使用 key 作为密码
-
-    # 根据 student_id 查询 DynamoDB
+    student_id = data.get('student_id')
+    password = data.get('password')
+    
     try:
         response = students_table.get_item(Key={'student-id': student_id})
-        student = response.get('Item')
-
-        if student and student['key'] == key:
-            access_token = create_access_token(identity=student_id)
-            return jsonify(access_token=access_token), 200
+        if 'Item' not in response:
+            return jsonify({'error': 'Student not found'}), 404
+        
+        student = response['Item']
+        if check_password_hash(student['password'], password):
+            return jsonify({'message': 'Login successful'}), 200
         else:
-            return jsonify({'message': 'Invalid credentials'}), 401
+            return jsonify({'error': 'Invalid password'}), 401
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 # 查询学生信息
 @app.route('/get_student_info', methods=['POST'])
@@ -126,7 +160,79 @@ def add_assignment():
     
     return jsonify({'message': 'Assignment added to all students in the class successfully'}), 200
 
+# 分段查询未完成作业API
+@app.route('/incomplete_assignments', methods=['GET'])
+@jwt_required()
+def get_incomplete_assignments():
+    student_id = get_jwt_identity()
+    last_evaluated_key = request.args.get('last_evaluated_key', None)
+    limit = int(request.args.get('limit', 15))
+    
+    scan_kwargs = {
+        'FilterExpression': 'student-id = :student_id AND completion-status = :status',
+        'ExpressionAttributeValues': {
+            ':student_id': student_id,
+            ':status': 'Incomplete'
+        },
+        'Limit': limit
+    }
+    if last_evaluated_key:
+        scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+    
+    response = assignments_table.scan(**scan_kwargs)
+    return jsonify({
+        'items': response['Items'],
+        'last_evaluated_key': response.get('LastEvaluatedKey')
+    }), 200
 
+# 分段查询已完成作业API
+@app.route('/completed_assignments', methods=['GET'])
+@jwt_required()
+def get_completed_assignments():
+    student_id = get_jwt_identity()
+    last_evaluated_key = request.args.get('last_evaluated_key', None)
+    limit = int(request.args.get('limit', 15))
+    
+    scan_kwargs = {
+        'FilterExpression': 'student-id = :student_id AND completion-status = :status',
+        'ExpressionAttributeValues': {
+            ':student_id': student_id,
+            ':status': 'Complete'
+        },
+        'Limit': limit
+    }
+    if last_evaluated_key:
+        scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+    
+    response = assignments_table.scan(**scan_kwargs)
+    return jsonify({
+        'items': response['Items'],
+        'last_evaluated_key': response.get('LastEvaluatedKey')
+    }), 200
+
+# 分段查询所有作业API
+@app.route('/all_assignments', methods=['GET'])
+@jwt_required()
+def get_all_assignments():
+    student_id = get_jwt_identity()
+    last_evaluated_key = request.args.get('last_evaluated_key', None)
+    limit = int(request.args.get('limit', 15))
+    
+    scan_kwargs = {
+        'FilterExpression': 'student-id = :student_id',
+        'ExpressionAttributeValues': {
+            ':student_id': student_id
+        },
+        'Limit': limit
+    }
+    if last_evaluated_key:
+        scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+    
+    response = assignments_table.scan(**scan_kwargs)
+    return jsonify({
+        'items': response['Items'],
+        'last_evaluated_key': response.get('LastEvaluatedKey')
+    }), 200
 
 # 标记作业为已完成或未完成的 API
 @app.route('/complete_assignment', methods=['POST'])
