@@ -23,6 +23,12 @@ def index():
 def login_page():
     return render_template('login.html')
 
+# 添加作业页面
+@app.route('/add-assignment', methods=['GET'])
+def add_assignment_page():
+    return render_template('add-assignment.html')
+
+
 # 用户登录API
 @app.route('/login', methods=['POST'])
 def login():
@@ -52,7 +58,11 @@ def get_student_info():
 
     try:
         response = students_table.get_item(Key={'student-id': student_id})
+        if not student_id:
+            return jsonify({'error': 'student_id is required'}), 422
+
         if 'Item' in response:
+            print(f"Response from database: {response}")
             return jsonify(response['Item']), 200
         else:
             return jsonify({'message': 'Student not found'}), 404
@@ -93,6 +103,7 @@ def add_assignment():
     assignment_title = data.get('assignment_title')
     assignment_content = data.get('assignment_content')
     due_date = data.get('due_date')
+    
 
     # 创建唯一的作业 ID
     assignment_id = str(uuid.uuid4())

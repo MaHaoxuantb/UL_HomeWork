@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 // 添加事件监听器，监听选择框状态的变化
                 document.getElementById('filter-finished').addEventListener('change', updateHomeworkDisplay);
                 document.getElementById('filter-unfinished').addEventListener('change', updateHomeworkDisplay);
+                // 添加事件监听器，监听选择框状态的变化
+                document.getElementById('filter-finished').addEventListener('change', handleCheckboxChange);
+                document.getElementById('filter-unfinished').addEventListener('change', handleCheckboxChange);
                 
                 // 直接调用 updateHomeworkDisplay 来应用默认的过滤和排序逻辑
                 updateHomeworkDisplay();
@@ -113,6 +116,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 });
 
+function handleCheckboxChange() {
+    const filterFinished = document.getElementById('filter-finished');
+    const filterUnfinished = document.getElementById('filter-unfinished');
+
+    // 选择框互斥逻辑
+    if (this.id === 'filter-finished' && this.checked) {
+        filterUnfinished.checked = false;
+    } else if (this.id === 'filter-unfinished' && this.checked) {
+        filterFinished.checked = false;
+    }
+
+    // 更新作业显示
+    updateHomeworkDisplay();
+}
+
 // 防抖函数，延迟时间改为 5 秒
 function debounce(func, delay = 5000) { // 默认延迟 5 秒
     if (debounceTimer) {
@@ -122,6 +140,7 @@ function debounce(func, delay = 5000) { // 默认延迟 5 秒
         func();  // 延迟结束后执行传入的函数
     }, delay);  // 设置新的定时器，延迟执行
 }
+
 
 // 完成作业的API调用函数
 function completeAssignment(studentId, classId, assignmentId, status) {
@@ -298,10 +317,4 @@ function updateHomeworkDisplay() {
     }
 }
 
-
-
-
-
 updateHomeworkDisplay()
-
-
