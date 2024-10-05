@@ -70,29 +70,62 @@ def get_student_info():
         return jsonify({'error': str(e)}), 500
 
 # 查询学生作业信息
-@app.route('/get_assignments', methods=['POST'])
-@jwt_required()
-def get_assignments():
-    data = request.json
-    student_id = data.get('student_id')
-
-    try:
-        # 根据 student_id 查询作业信息
-        response = assignments_table.query(
-        KeyConditionExpression="#student_id = :student_id",
+# 查询某个班级的所有学生
+def get_students_in_class(class_id):
+    response = students_table.scan(
+        FilterExpression="contains(#class_ids, :class_id)",
         ExpressionAttributeNames={
-            '#student_id': 'student-id'  # 使用 ExpressionAttributeNames 处理包含 "-" 的属性名
+            '#class_ids': 'class-ids'  # 使用ExpressionAttributeNames替代带有连字符的属性名
         },
         ExpressionAttributeValues={
-            ':student_id': student_id
+            ':class_id': class_id
         }
-        )
-        if 'Items' in response:
-            return jsonify(response['Items']), 200
-        else:
-            return jsonify({'message': 'No assignments found for this student.'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    )
+    return response['Items']
+
+# 为学生添加作业记录
+def insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date, status='Incomplete'):
+    assignment_id = str(uuid.uuid4())  # 生成唯一的作业ID
+    class_assignment_id = f"{class_id}#{assignment_id}"  # 组合学科班级ID和作业ID
+    submission_time = datetime.now().isoformat()  # 提交时间
+    
+    assignments_table.put_item(
+        Item={
+            'student-id': student_id,                     # 分区键：学生ID
+            'class-id#assignment-id': class_assignment_id,  # 排序键：班级ID和作业ID
+            'class-id': class_id,                         # 班级ID
+            'assignment-id': assignment_id,               # 作业ID
+            'due-date': due_date,                         # 作业截止日期
+            'assignment-title': assignment_title,         # 作业标题
+            'assignment-content': assignment_content,     # 作业详情
+            'completion-status': status,                  # 作业状态
+            'submission-time': submission_time            # 作业提交时间
+        }
+    )
+
+# 添加作业API
+@app.route('/add_assignment', methods=['POST'])
+@jwt_required()
+def add_assignment():
+    data = request.json
+    class_id = data.get('class_id')
+    assignment_title = data.get('assignment_title')
+    assignment_content = data.get('assignment_content')
+    due_date = data.get('due_date')
+
+    # 查询班级里的所有学生
+    students = get_students_in_class(class_id)
+    
+    if not students:
+        return jsonify({'error': 'No students found in the specified class'}), 404
+    
+    # 为每个学生添加作业记录
+    for student in students:
+        student_id = student['student-id']
+        insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date)
+    
+    return jsonify({'message': 'Assignment added to all students in the class successfully'}), 200
+
 
 # 添加作业API
 @app.route('/add_assignment', methods=['POST'])
