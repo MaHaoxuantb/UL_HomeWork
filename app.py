@@ -77,12 +77,12 @@ def login():
         
         student = response['Item']
         if check_password_hash(student['password'], password):
-            return jsonify({'message': 'Login successful'}), 200
+            access_token = create_access_token(identity=student_id)
+            return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
         else:
             return jsonify({'error': 'Invalid password'}), 401
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 # 查询学生信息
 @app.route('/get_student_info', methods=['POST'])
