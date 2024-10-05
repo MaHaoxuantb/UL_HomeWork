@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 import boto3
 from datetime import datetime
 import uuid
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'super-secret-key'  # 设定一个密钥
