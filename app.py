@@ -49,7 +49,7 @@ def add_student():
         students_table.put_item(
             Item={
                 'student-id': student_id,   # 主键：学生ID
-                'password': hashed_password,  # 存储密码哈希值
+                'key': hashed_password,  # 存储密码哈希值
                 'name': name,               # 学生姓名
                 'email': email,             # 学生邮箱
                 'class-ids': class_ids,     # 学生注册的班级列表
@@ -76,7 +76,7 @@ def login():
             return jsonify({'error': 'Student not found'}), 404
         
         student = response['Item']
-        if check_password_hash(student['password'], password):
+        if check_password_hash(student['key'], password):
             access_token = create_access_token(identity=student_id)
             return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
         else:
