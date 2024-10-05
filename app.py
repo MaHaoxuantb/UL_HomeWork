@@ -169,8 +169,9 @@ def get_incomplete_assignments():
     last_evaluated_key = request.args.get('last_evaluated_key', None)
     limit = int(request.args.get('limit', 15))
     
-    scan_kwargs = {
-        'FilterExpression': 'student-id = :student_id AND completion-status = :status',
+    query_kwargs = {
+        'IndexName': 'studentIdCompletionStatusIndex',
+        'KeyConditionExpression': 'student-id = :student_id AND completion-status = :status',
         'ExpressionAttributeValues': {
             ':student_id': student_id,
             ':status': 'Incomplete'
@@ -178,9 +179,11 @@ def get_incomplete_assignments():
         'Limit': limit
     }
     if last_evaluated_key:
-        scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+        query_kwargs['ExclusiveStartKey'] = last_evaluated_key
     
-    response = assignments_table.scan(**scan_kwargs)
+    query_kwargs['ScanIndexForward'] = False  # 按截止日期从现在到过去排序
+    query_kwargs['IndexName'] = 'DueDateIndex'
+    response = assignments_table.query(**query_kwargs)
     return jsonify({
         'items': response['Items'],
         'last_evaluated_key': response.get('LastEvaluatedKey')
@@ -194,8 +197,9 @@ def get_completed_assignments():
     last_evaluated_key = request.args.get('last_evaluated_key', None)
     limit = int(request.args.get('limit', 15))
     
-    scan_kwargs = {
-        'FilterExpression': 'student-id = :student_id AND completion-status = :status',
+    query_kwargs = {
+        'IndexName': 'studentIdCompletionStatusIndex',
+        'KeyConditionExpression': 'student-id = :student_id AND completion-status = :status',
         'ExpressionAttributeValues': {
             ':student_id': student_id,
             ':status': 'Complete'
@@ -203,9 +207,11 @@ def get_completed_assignments():
         'Limit': limit
     }
     if last_evaluated_key:
-        scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+        query_kwargs['ExclusiveStartKey'] = last_evaluated_key
     
-    response = assignments_table.scan(**scan_kwargs)
+    query_kwargs['ScanIndexForward'] = False  # 按截止日期从现在到过去排序
+    query_kwargs['IndexName'] = 'DueDateIndex'
+    response = assignments_table.query(**query_kwargs)
     return jsonify({
         'items': response['Items'],
         'last_evaluated_key': response.get('LastEvaluatedKey')
@@ -219,17 +225,20 @@ def get_all_assignments():
     last_evaluated_key = request.args.get('last_evaluated_key', None)
     limit = int(request.args.get('limit', 15))
     
-    scan_kwargs = {
-        'FilterExpression': 'student-id = :student_id',
+    query_kwargs = {
+        'IndexName': 'studentIdCompletionStatusIndex',
+        'KeyConditionExpression': 'student-id = :student_id',
         'ExpressionAttributeValues': {
             ':student_id': student_id
         },
         'Limit': limit
     }
     if last_evaluated_key:
-        scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+        query_kwargs['ExclusiveStartKey'] = last_evaluated_key
     
-    response = assignments_table.scan(**scan_kwargs)
+    query_kwargs['ScanIndexForward'] = False  # 按截止日期从现在到过去排序
+    query_kwargs['IndexName'] = 'DueDateIndex'
+    response = assignments_table.query(**query_kwargs)
     return jsonify({
         'items': response['Items'],
         'last_evaluated_key': response.get('LastEvaluatedKey')
