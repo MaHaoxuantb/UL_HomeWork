@@ -67,7 +67,7 @@ def add_student():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    student_id = data.get('student_id')
+    student_id = data.get('username')
     password = data.get('password')
     
     try:
