@@ -127,36 +127,6 @@ def add_assignment():
     return jsonify({'message': 'Assignment added to all students in the class successfully'}), 200
 
 
-# 添加作业API
-@app.route('/add_assignment', methods=['POST'])
-@jwt_required()
-def add_assignment():
-    data = request.json
-    class_id = data.get('class_id')
-    assignment_title = data.get('assignment_title')
-    assignment_content = data.get('assignment_content')
-    due_date = data.get('due_date')
-    
-
-    # 创建唯一的作业 ID
-    assignment_id = str(uuid.uuid4())
-    
-    # 记录作业信息
-    try:
-        response = assignments_table.put_item(
-            Item={
-                'class-id#assignment-id': f"{class_id}#{assignment_id}",
-                'assignment-id': assignment_id,
-                'class-id': class_id,
-                'assignment-title': assignment_title,
-                'assignment-content': assignment_content,
-                'due-date': due_date,
-                'completion-status': 'Incomplete'  # 默认设置为未完成
-            }
-        )
-        return jsonify({'message': 'Assignment added successfully'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 # 标记作业为已完成或未完成的 API
 @app.route('/complete_assignment', methods=['POST'])
