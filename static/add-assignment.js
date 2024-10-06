@@ -1,5 +1,4 @@
 const token = localStorage.getItem('jwtToken'); // 从 localStorage 获取 token
-const studentId = localStorage.getItem('studentId'); // 从 localStorage 获取 studentId
 
 document.addEventListener('DOMContentLoaded', async function() {
     const dueDateInput = document.getElementById('due-date');
@@ -37,7 +36,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             body: JSON.stringify({ student_id: localStorage.getItem('studentId') })
         });
 
-
         const result = await response.json();
 
         if (response.ok && result['class-ids']) {
@@ -74,8 +72,7 @@ document.getElementById('add-assignment-form').addEventListener('submit', async 
         class_id: classId,
         assignment_title: assignmentTitle,
         assignment_content: assignmentContent,
-        due_date: fullDueDate,
-        student_id: localStorage.getItem('studentId')  // 将 studentId 包含在数据中
+        due_date: fullDueDate // 修正为 ISO 格式的日期时间字符串
     };
 
     // 调试输出，检查 assignmentData 是否完整
