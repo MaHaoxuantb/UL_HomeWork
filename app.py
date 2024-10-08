@@ -2,18 +2,32 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import boto3
+
 from datetime import datetime
 from datetime import timedelta
+
 import uuid
-from werkzeug.security import generate_password_hash, check_password_hash
 import json
+
+from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 
+
+# 设定 Flask应用
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = secrets.token_hex(128)  # 生成一个强随机的 128 字节密钥（1024 位）
 jwt = JWTManager(app)
 CORS(app)
+
+#设置api请求限制
+limiter = Limiter(
+    key_func=lambda: get_jwt_identity()['student_id'] if get_jwt_identity() else get_remote_address(),  # 使用 JWT 中的 student_id 作为速率限制的键
+    app=app,
+    default_limits=["3000 per day", "500 per hour"]  # 设置全局速率限制，每天最多 200 次请求，每小时最多 50 次请求
+)
 
 # 初始化DynamoDB客户端
 dynamodb = boto3.resource('dynamodb')
@@ -99,6 +113,7 @@ def login():
 # 查询学生信息
 @app.route('/get_student_info', methods=['POST'])
 @jwt_required()
+@limiter.limit("10 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def get_student_info():
     identity = get_jwt_identity()
     student_id = identity.get('student_id')
@@ -159,6 +174,7 @@ def insert_assignment_completion(student_id, class_id, assignment_title, assignm
 # 添加作业API
 @app.route('/add_assignment', methods=['POST'])
 @jwt_required()
+@limiter.limit("10 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def add_assignment():
     current_user = get_jwt_identity()
     
@@ -192,6 +208,7 @@ def add_assignment():
 # 分段查询未完成作业API
 @app.route('/incomplete_assignments', methods=['GET'])
 @jwt_required()
+@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def get_incomplete_assignments():
     try:
         current_user = get_jwt_identity()
@@ -237,6 +254,7 @@ def get_incomplete_assignments():
 #分段查询已完成作业 API
 @app.route('/completed_assignments', methods=['GET'])
 @jwt_required()
+@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def get_completed_assignments():
     try:
         current_user = get_jwt_identity()
@@ -278,6 +296,7 @@ def get_completed_assignments():
 # 分段查询所有作业API
 @app.route('/all_assignments', methods=['GET'])
 @jwt_required()
+@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def get_all_assignments():
     try:
         current_user = get_jwt_identity()
@@ -319,6 +338,7 @@ def get_all_assignments():
 # 标记作业为已完成或未完成的 API
 @app.route('/complete_assignment', methods=['POST'])
 @jwt_required()
+@limiter.limit("20 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def complete_assignment():
     data = request.json
     current_user = get_jwt_identity()
@@ -359,6 +379,7 @@ def complete_assignment():
 # 修改用户密码API
 @app.route('/change_password', methods=['POST'])
 @jwt_required()
+@limiter.limit("1 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def change_password():
     current_user = get_jwt_identity()
     student_id = current_user['student_id']
