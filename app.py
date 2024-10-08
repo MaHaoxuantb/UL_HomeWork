@@ -40,19 +40,23 @@ def add_student():
     password = data.get('password')
     hashed_password = generate_password_hash(password)  # 存储密码的哈希值
     name = data.get('name')
+    english_name = data.get('english_name')  # 获取学生的英文名
+    role = data.get('role')  # 获取学生的角色
     email = data.get('email')
     class_ids = data.get('class_ids')
     age = data.get('age')
     gender = data.get('gender')
     phone_number = data.get('phone_number')
     enrollment_date = datetime.now().isoformat()  # 记录入学日期
-    
+
     try:
         students_table.put_item(
             Item={
                 'student-id': student_id,   # 主键：学生ID
                 'key': hashed_password,  # 存储密码哈希值
                 'name': name,               # 学生姓名
+                'englishName': english_name,  # 学生英文名
+                'role': role,               # 学生角色
                 'email': email,             # 学生邮箱
                 'class-ids': class_ids,     # 学生注册的班级列表
                 'enrollment-date': enrollment_date,  # 入学日期
@@ -64,6 +68,7 @@ def add_student():
         return jsonify({'message': 'Student added successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 # 学生登录API
 @app.route('/login', methods=['POST'])
