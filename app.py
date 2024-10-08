@@ -13,6 +13,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from redis import Redis
+
 
 
 
@@ -22,9 +24,13 @@ app.config['JWT_SECRET_KEY'] = secrets.token_hex(128)  # 生成一个强随机�
 jwt = JWTManager(app)
 CORS(app)
 
+# 创建 Redis 客户端
+redis_client = Redis(host='localhost', port=6379, db=0)
+
 # 使用 Flask-Limiter，基于 JWT 身份进行速率限制
 limiter = Limiter(
     key_func=lambda: get_remote_address() if not request.endpoint.startswith('auth') else get_jwt_identity().get('student_id'),
+    storage_uri="redis://localhost:6379",  # 指定 Redis 作为存储
     app=app,
     default_limits=["200 per day", "100 per hour"]  # 设置全局速率限制
 )
@@ -430,4 +436,4 @@ def change_password():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(debug=True， host='0.0.0.0', port=6000)
