@@ -29,7 +29,11 @@ limiter = Limiter(
     default_limits=["200 per day", "100 per hour"]  # 设置全局速率限制
 )
 
-limiter.init_app(app, application_limits=["3000 per day", "500 per hour"]) 
+# 为所有路由添加总体的请求限制
+@app.before_request
+@limiter.limit("3000 per day; 500 per hour")  # 全局限制：每天最多 3000 次请求，每小时最多 500 次请求
+def limit_global():
+    pass
 
 # 初始化DynamoDB客户端
 dynamodb = boto3.resource('dynamodb')
