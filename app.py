@@ -54,6 +54,10 @@ def login_page():
 def add_assignment_page():
     return render_template('add-assignment.html')
 
+@app.route('/edit-assignment', methods=['GET'])
+def edit_assignment_page():
+    return render_template('edit-assignment.html')
+
 
 # 添加学生API
 @app.route('/add_student', methods=['POST'])
