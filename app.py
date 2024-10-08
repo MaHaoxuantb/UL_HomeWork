@@ -22,11 +22,11 @@ app.config['JWT_SECRET_KEY'] = secrets.token_hex(128)  # 生成一个强随机�
 jwt = JWTManager(app)
 CORS(app)
 
-#设置api请求限制
+# 使用 Flask-Limiter，基于 JWT 身份进行速率限制
 limiter = Limiter(
-    key_func=lambda: get_jwt_identity()['student_id'] if get_jwt_identity() else get_remote_address(),  # 使用 JWT 中的 student_id 作为速率限制的键
+    key_func=lambda: get_remote_address() if not request.endpoint.startswith('auth') else get_jwt_identity().get('student_id'),
     app=app,
-    default_limits=["3000 per day", "500 per hour"]  # 设置全局速率限制，每天最多 200 次请求，每小时最多 50 次请求
+    default_limits=["3000 per day", "500 per hour"]  # 设置全局速率限制
 )
 
 # 初始化DynamoDB客户端
@@ -208,7 +208,7 @@ def add_assignment():
 # 分段查询未完成作业API
 @app.route('/incomplete_assignments', methods=['GET'])
 @jwt_required()
-@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
+@limiter.limit("10 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def get_incomplete_assignments():
     try:
         current_user = get_jwt_identity()
@@ -254,7 +254,7 @@ def get_incomplete_assignments():
 #分段查询已完成作业 API
 @app.route('/completed_assignments', methods=['GET'])
 @jwt_required()
-@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
+@limiter.limit("10 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def get_completed_assignments():
     try:
         current_user = get_jwt_identity()
@@ -296,7 +296,7 @@ def get_completed_assignments():
 # 分段查询所有作业API
 @app.route('/all_assignments', methods=['GET'])
 @jwt_required()
-@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
+@limiter.limit("10 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def get_all_assignments():
     try:
         current_user = get_jwt_identity()
