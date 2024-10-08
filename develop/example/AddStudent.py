@@ -30,11 +30,11 @@ def add_student(student_id, name, english_name, role, email, class_ids, age, gen
     print(f"Student {name} added with student-id: {student_id} and key: {key}")
 
 # Example data: Modify this section with actual student details
-student_id = '1234'  # Unique student ID (primary key)
-password = '1234'  # An additional key attribute, can be anything you choose
+student_id = '12345'  # Unique student ID (primary key)
+password = '12345'  # An additional key attribute, can be anything you choose
 name = 'Ma Haoxuan'  # Student name
 english_name = 'Mike'  # Student English name
-role = 'student'  # Student role
+role = 'admin'  # Student role
 email = ''  # Student email
 class_ids = ['Math101', 'Science102']  # Classes the student is enrolled in
 age = 15  # Student age
