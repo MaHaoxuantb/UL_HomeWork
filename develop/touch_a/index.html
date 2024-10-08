@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+</head>
+<body>
+    <h1>User Login</h1>
+    <form id="loginForm">
+        <label for="username">Student ID:</label>
+        <input type="text" id="username"><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password"><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <h1>Add Assignment</h1>
+    <form id="assignmentForm">
+        <label for="assignmentTitle">Assignment Title:</label>
+        <input type="text" id="assignmentTitle"><br>
+        <label for="assignmentContent">Assignment Content:</label>
+        <textarea id="assignmentContent"></textarea><br>
+        <label for="classId">Class ID:</label>
+        <input type="text" id="classId"><br>
+        <label for="dueDate">Due Date:</label>
+        <input type="date" id="dueDate"><br>
+        <button type="submit">Add Assignment</button>
+    </form>
+
+    <h1>Get Assignments</h1>
+    <form id="assignmentsForm">
+        <label for="studentIdForAssignments">Student ID:</label>
+        <input type="text" id="studentIdForAssignments"><br>
+        <button type="submit">Get Assignments</button>
+    </form>
+
+    <h1>Get Student Info</h1>
+    <form id="studentInfoForm">
+        <label for="studentIdForInfo">Student ID:</label>
+        <input type="text" id="studentIdForInfo"><br>
+        <button type="submit">Get Student Info</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>

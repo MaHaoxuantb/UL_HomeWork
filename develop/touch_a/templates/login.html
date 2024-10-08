@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/styles-login.css">
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h2>Login Your Account</h2>
+            <!-- 学生ID输入框 -->
+            <div class="input-container">
+                <img src="../static/user-icon.png" alt="User Icon" class="icon">
+                <input type="text" id="student-id" placeholder="Student ID">
+            </div>
+            <!-- 密码输入框 -->
+            <div class="input-container">
+                <img src="../static/padlock-icon.png" alt="Padlock Icon" class="icon">
+                <input type="password" id="password" placeholder="Password">
+                <button id="toggle-password">
+                    <img src="../static/eye-close.png" alt="Eye Icon" class="eye-icon">
+                </button>
+            </div>
+
+            <!-- 错误提示区域 -->
+            <div id="error-message" class="error-message">
+                <img src="../static/error.png" alt="Error Icon" class="error-icon" style="display: none;">
+                <span id="error-text"></span>
+            </div>
+
+            <!-- 登录按钮 -->
+            <button id="login-btn">Login</button>
+        </div>
+    </div>
+
+    <script src="../static/script-login.js"></script>
+</body>
+</html>
