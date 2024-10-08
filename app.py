@@ -187,17 +187,16 @@ def add_assignment():
 def get_incomplete_assignments():
     try:
         current_user = get_jwt_identity()
-        student_id = get_jwt_identity()  # 获取JWT中的student_id
+        student_id = str(current_user['student_id'])  # 确保 student_id 是字符串类型
         last_evaluated_key = request.args.get('last_evaluated_key', None)
         limit = int(request.args.get('limit', 15))
 
-        # 查询参数
+        # 使用 studentIdCompletionStatusIndex 进行查询
         query_kwargs = {
-            'IndexName': 'studentIdDueDateIndex',  # 假设索引的名字
-            'KeyConditionExpression': '#student_id = :student_id',  # 分区键查询
-            'FilterExpression': '#completion_status = :status',  # 使用 FilterExpression 过滤未完成作业
+            'IndexName': 'studentIdCompletionStatusIndex',
+            'KeyConditionExpression': '#studentId = :student_id AND #completion_status = :status',
             'ExpressionAttributeNames': {
-                '#student_id': 'student-id',
+                '#studentId': 'student-id',
                 '#completion_status': 'completion-status'
             },
             'ExpressionAttributeValues': {
@@ -208,15 +207,12 @@ def get_incomplete_assignments():
         }
 
         if last_evaluated_key:
-            # 尝试将字符串转换为字典
             try:
                 last_evaluated_key = json.loads(last_evaluated_key)
             except json.JSONDecodeError:
                 return jsonify({'error': 'Invalid last_evaluated_key format'}), 400
             query_kwargs['ExclusiveStartKey'] = last_evaluated_key
 
-        query_kwargs['ScanIndexForward'] = True  # 按截止日期从现在到过去排序
-        query_kwargs['IndexName'] = 'DueDateIndex'
         response = assignments_table.query(**query_kwargs)
 
         return jsonify({
@@ -224,7 +220,6 @@ def get_incomplete_assignments():
             'last_evaluated_key': response.get('LastEvaluatedKey')
         }), 200
     except Exception as e:
-        # 捕获并记录异常信息
         app.logger.error(f"Error in /incomplete_assignments: {e}")
         return jsonify({'error': str(e)}), 500
 
@@ -237,17 +232,16 @@ def get_incomplete_assignments():
 def get_completed_assignments():
     try:
         current_user = get_jwt_identity()
-        student_id = get_jwt_identity()  # 获取JWT中的student_id
+        student_id = str(current_user['student_id'])
         last_evaluated_key = request.args.get('last_evaluated_key', None)
         limit = int(request.args.get('limit', 15))
 
-        # 查询已完成作业
+        # 使用 studentIdCompletionStatusIndex 进行查询
         query_kwargs = {
-            'IndexName': 'DueDateIndex',  # 使用 'DueDateIndex' 作为索引，和未完成作业一致
-            'KeyConditionExpression': '#student_id = :student_id',  # 分区键查询
-            'FilterExpression': '#completion_status = :status',  # 使用 FilterExpression 过滤已完成作业
+            'IndexName': 'studentIdCompletionStatusIndex',
+            'KeyConditionExpression': '#studentId = :student_id AND #completion_status = :status',
             'ExpressionAttributeNames': {
-                '#student_id': 'student-id',
+                '#studentId': 'student-id',
                 '#completion_status': 'completion-status'
             },
             'ExpressionAttributeValues': {
@@ -258,13 +252,8 @@ def get_completed_assignments():
         }
 
         if last_evaluated_key:
-            try:
-                last_evaluated_key = json.loads(last_evaluated_key)
-            except json.JSONDecodeError:
-                return jsonify({'error': 'Invalid last_evaluated_key format'}), 400
             query_kwargs['ExclusiveStartKey'] = last_evaluated_key
 
-        query_kwargs['ScanIndexForward'] = False  # 按截止日期从现在到过去排序
         response = assignments_table.query(**query_kwargs)
 
         return jsonify({
@@ -272,7 +261,6 @@ def get_completed_assignments():
             'last_evaluated_key': response.get('LastEvaluatedKey')
         }), 200
     except Exception as e:
-        # 捕获并记录异常信息
         app.logger.error(f"Error in /completed_assignments: {e}")
         return jsonify({'error': str(e)}), 500
 
@@ -285,16 +273,16 @@ def get_completed_assignments():
 def get_all_assignments():
     try:
         current_user = get_jwt_identity()
-        student_id = get_jwt_identity()  # 获取JWT中的student_id
+        student_id = str(current_user['student_id'])
         last_evaluated_key = request.args.get('last_evaluated_key', None)
         limit = int(request.args.get('limit', 15))
 
-        # 查询所有作业
+        # 使用 DueDateIndex 进行查询
         query_kwargs = {
-            'IndexName': 'DueDateIndex',  # 使用 'DueDateIndex' 作为索引
-            'KeyConditionExpression': '#student_id = :student_id',  # 只使用分区键查询所有作业
+            'IndexName': 'DueDateIndex',
+            'KeyConditionExpression': '#studentId = :student_id',
             'ExpressionAttributeNames': {
-                '#student_id': 'student-id'
+                '#studentId': 'student-id'
             },
             'ExpressionAttributeValues': {
                 ':student_id': student_id
@@ -303,10 +291,6 @@ def get_all_assignments():
         }
 
         if last_evaluated_key:
-            try:
-                last_evaluated_key = json.loads(last_evaluated_key)
-            except json.JSONDecodeError:
-                return jsonify({'error': 'Invalid last_evaluated_key format'}), 400
             query_kwargs['ExclusiveStartKey'] = last_evaluated_key
 
         query_kwargs['ScanIndexForward'] = False  # 按截止日期从现在到过去排序
@@ -317,9 +301,9 @@ def get_all_assignments():
             'last_evaluated_key': response.get('LastEvaluatedKey')
         }), 200
     except Exception as e:
-        # 捕获并记录异常信息
         app.logger.error(f"Error in /all_assignments: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 
 
