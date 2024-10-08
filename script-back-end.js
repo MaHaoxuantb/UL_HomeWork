@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    fetch('http://127.0.0.1:8000/login', {
+    fetch('http://[2a01:4f8:201:2063::4095:d92c]:8000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -33,7 +33,7 @@ document.getElementById('assignmentsForm').addEventListener('submit', function(e
     event.preventDefault();
     const student_id = document.getElementById('studentIdForAssignments').value;
 
-    fetch('http://127.0.0.1:8000/get_assignments', {
+    fetch('http://[2a01:4f8:201:2063::4095:d92c]:8000/get_assignments', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ document.getElementById('studentInfoForm').addEventListener('submit', function(e
     event.preventDefault();
     const student_id = document.getElementById('studentIdForInfo').value;
 
-    fetch('http://127.0.0.1:8000/get_student_info', {
+    fetch('http://[2a01:4f8:201:2063::4095:d92c]:8000/get_student_info', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
