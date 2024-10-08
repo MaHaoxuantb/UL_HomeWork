@@ -7,9 +7,11 @@ from datetime import timedelta
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+import secrets
+
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'super-secret-key'  # 设定一个密钥
+app.config['JWT_SECRET_KEY'] = secrets.token_hex(128)  # 生成一个强随机的 128 字节密钥（1024 位）
 jwt = JWTManager(app)
 CORS(app)
 
@@ -351,6 +353,7 @@ def complete_assignment():
             return jsonify({'message': 'Assignment not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 
 # 修改用户密码API
