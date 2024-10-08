@@ -40,6 +40,7 @@ dynamodb = boto3.resource('dynamodb')
 students_table = dynamodb.Table('Students')  # 学生信息表
 assignments_table = dynamodb.Table('AssignmentsCompletion')  # 作业完成情况表
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
