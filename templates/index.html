@@ -72,16 +72,28 @@
     <div class="user-container" style="visibility: hidden; opacity: 0;">
         <div id="user-info">
             Hi, <span id="user-name"></span>
-            <div id="triangle"></div> <!-- 添加小三角形符号 -->
+            <div id="triangle"></div>
         </div>
-        <!-- 新的添加作业按钮 -->
-        <div id="add-assignment-option" onclick="window.location.href='/add-assignment'">
-            Add Assignment
-        </div>        
-        <div id="logout-option">
+
+        <div id="change-password-option" onclick="window.location.href='/change-password'" style="visibility: hidden;">
+            Change Password
+        </div>
+
+        <div id="logout-option" style="visibility: hidden;">
             Logout
         </div>
+    
+        <!-- Add Assignment 按钮 -->
+        <div id="add-assignment-option" onclick="window.location.href='/add-assignment'" style="visibility: hidden;">
+            Add Assignment
+        </div>
+
+        <!-- Edit Assignment 按钮 -->
+        <div id="edit-assignment-option" onclick="window.location.href='/edit-assignment'" style="visibility: hidden;">
+            Edit Assignment
+        </div>
     </div>
+
     
     <script src="../static/script.js"></script>
 </body>

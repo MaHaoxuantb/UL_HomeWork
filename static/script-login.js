@@ -34,17 +34,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
                 if (data.access_token) {
                     const token = data.access_token;  // 保存 JWT 令牌
-                    //alert('Logged in successfully!');
+                    
+                    // 保存 studentId, jwtToken 和 role
                     localStorage.setItem('studentId', studentId);
                     localStorage.setItem('jwtToken', token);
-                    console.log('Token stored in localStorage:', token);
                     
                     // 触发登录成功事件
                     window.dispatchEvent(new CustomEvent('loginSuccess', { detail: { studentId } }));
                     window.location.href = '/'; // 登录成功后跳转
                 } else {
                     showError('Login failed');
-                }
+                }                
             } catch (error) {
                 console.error('Error:', error);
                 showError('An error occurred while logging in');

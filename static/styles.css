@@ -1,3 +1,87 @@
+
+/* 移动端样式 */
+@media screen and (max-width: 768px) {
+  
+    /* 1. 调整 header 布局为横向排列，并分散对齐 */
+    header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0;
+    }
+
+    h1 {
+        display: inline-block; /* 将 h1 设置为行内块元素，避免换行 */
+    }
+
+    /* 2. 隐藏 header 中的 h2 元素，简化移动端头部 */
+    header h2 {
+      display: none;
+    }
+    
+    /* 3. 调整登录按钮的位置，从绝对定位改为静态定位 */
+    #login-btn {
+      position: static; /* 移除绝对定位 */
+      margin-left: 0; /* 移除左外边距 */
+      order: 2; /* 确保按钮在 header 的右侧 */
+    }
+    
+    /* 4. 将 main 容器的方向改为垂直排列 */
+    main.main {
+      flex-direction: column;
+    }
+    
+    /* 5. 重新排列 sidebar 和 homework-wrapper 的顺序 */
+    .sidebar {
+      order: 2; /* 确保 sidebar 在下方 */
+      width: 100%; /* 使 sidebar 占满全宽 */
+      margin: 10px 0; /* 上下外边距 */
+    }
+    
+    .homework-wrapper {
+      order: 1; /* 确保 homework-wrapper 在上方 */
+      width: 100%; /* 使 homework-wrapper 占满全宽 */
+    }
+    
+    /* 6. 确保 homework-list 和 load-more-container 占满全宽 */
+    #homeworkContainer {
+      width: 100%;
+      margin: 0;
+      padding: 10px;
+    }
+    
+    #load-more-container {
+      margin: 10px 0; /* 上下外边距，避免被遮挡 */
+    }
+    
+    /* 7. 可选：调整 footer 的内边距以适应移动端 */
+    footer {
+      padding: 10px;
+    }
+    
+    /* 8. 确保用户信息容器在移动端正确显示 */
+    .user-container {
+      position: static; /* 移除绝对定位 */
+      align-items: flex-end; /* 右对齐 */
+      margin-top: 10px; /* 上外边距 */
+    }
+    
+    /* /* 9. 可选：调整 Sidebar 中按钮和复选框的样式以适应移动端 */
+    .sidebar .category button, 
+    .sidebar input[type="checkbox"] {
+      width: 100%; /* 使按钮和复选框占满全宽 */
+      padding: 10px; /* 增加内边距，提升触控体验 */
+    }
+    
+    /* 10. 可选：调整 Load More 按钮的样式以适应移动端 */
+    #loadMoreButton {
+      font-size: 18px; /* 增大字体，提升可点击性 */
+      padding: 10px 20px; /* 增加内边距 */
+    }
+    
+  }
+
 * {
     margin: 0;
     padding: 0;
@@ -52,7 +136,7 @@ h1 {
     width: 100px; /* 控制图片宽度 */
     height: auto; /* 保持图片的宽高比 */
     vertical-align: middle; /* 使图片和文本垂直居中对齐 */
-    /*margin-left: 10px; /* 给图片和标题之间添加一些间距 */
+    margin-left: 10px; /* 给图片和标题之间添加一些间距 */
     display: inline-block; /* 确保图片也在同一行显示 */
 }
 
@@ -250,6 +334,55 @@ footer {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
+#edit-assignment-option {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 3px;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    margin-top: 0px; /* 与 user-info 之间的间距 */
+}
+
+#edit-assignment-option.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#edit-assignment-option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#change-password-option {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 3px;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    margin-top: 0px; /* 与 user-info 之间的间距 */
+}
+
+/* 显示按钮的效果 */
+#change-password-option.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: visible;
+}
+
+#change-password-option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 /* Logout按钮 */
 #logout-option {
     background-color: rgba(255, 255, 255, 0.2);
@@ -273,6 +406,8 @@ footer {
 #logout-option:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
+
 
 
 

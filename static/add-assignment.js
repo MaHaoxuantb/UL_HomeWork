@@ -5,13 +5,24 @@ document.addEventListener('DOMContentLoaded', async function() {
     const dueHourSelect = document.getElementById('due-hour');
     const dueMinuteSelect = document.getElementById('due-minute');
     const classIdSelect = document.getElementById('class-id');
+    const subjectSelect = document.getElementById('subject');
+    const teacherSelect = document.getElementById('teacher-name');
 
-    // Get current Shanghai time
+    const teachersBySubject = {
+        Math: ['David Sagarino', 'Sanchia Yu'],
+        English: ['Fiona Fan', 'Marissa Strachan'],
+        Chemistry: ['Sheena Meng', 'Skyler Zhang'],
+        Physics: ['Nathan Li', 'Damjan Gemovic'],
+        Economics: ['Sisi Gao', 'Oliver Zhang']
+    };
+
+    // 设置默认日期和时间为上海时间
     const now = new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' });
     const shanghaiDate = new Date(now);
 
-    // 设置默认日期和时间
-    dueDateInput.value = shanghaiDate.toISOString().split('T')[0]; // 设置日期
+    dueDateInput.value = shanghaiDate.toISOString().split('T')[0]; // 设置默认日期
+
+    // 填充小时和分钟选择框
     for (let i = 0; i < 24; i++) {
         const option = document.createElement('option');
         option.value = i.toString().padStart(2, '0');
@@ -25,7 +36,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         dueMinuteSelect.appendChild(option);
     }
 
-    // Fetch class IDs for the student
+    // 动态更新 Teacher 选项
+    subjectSelect.addEventListener('change', function() {
+        const selectedSubject = subjectSelect.value;
+        teacherSelect.innerHTML = '<option value="">Select Teacher</option>'; // 清空之前的选项
+
+        if (teachersBySubject[selectedSubject]) {
+            teachersBySubject[selectedSubject].forEach(function(teacher) {
+                const option = document.createElement('option');
+                option.value = teacher;
+                option.textContent = teacher;
+                teacherSelect.appendChild(option);
+            });
+        }
+    });
+
+    // 获取学生的班级 ID
     try {
         const response = await fetch('http://127.0.0.1:8000/get_student_info', {
             method: 'POST',
@@ -54,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
+// 提交表单事件处理
 document.getElementById('add-assignment-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -63,20 +90,22 @@ document.getElementById('add-assignment-form').addEventListener('submit', async 
     const dueMinute = document.getElementById('due-minute').value;
     const assignmentTitle = document.getElementById('assignment-title').value;
     const assignmentContent = document.getElementById('assignment-content').value;
+    const teacherName = document.getElementById('teacher-name').value;  // 新增
+    const submissionMethod = document.getElementById('submission-method').value;  // 新增
+    const subject = document.getElementById('subject').value;  // 新增
 
-    // Concatenate due date with hour and minute as a single string
+    // 合并日期和时间
     const fullDueDate = `${dueDate} ${dueHour}:${dueMinute}`;
 
-    // 构建 assignmentData 对象
     const assignmentData = {
         class_id: classId,
         assignment_title: assignmentTitle,
         assignment_content: assignmentContent,
-        due_date: fullDueDate // 修正为 ISO 格式的日期时间字符串
+        due_date: fullDueDate,
+        teacher_name: teacherName,  // 新增字段
+        submission_method: submissionMethod,  // 新增字段
+        subject: subject  // 新增字段
     };
-
-    // 调试输出，检查 assignmentData 是否完整
-    console.log("Assignment Data:", assignmentData);
 
     try {
         const response = await fetch('http://127.0.0.1:8000/add_assignment', {

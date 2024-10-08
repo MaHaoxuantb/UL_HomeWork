@@ -15,14 +15,21 @@ document.addEventListener('DOMContentLoaded', async function () {
         // 默认勾选 "Unfinished" 选择框
         const filterUnfinished = document.getElementById('filter-unfinished');
         filterUnfinished.checked = true; // 默认勾选 Unfinished 选择框
-    
-        // 添加事件监听器，监听选择框状态的变化
+
+        // 添加事件监听器，监听完成状态选择框状态的变化
         document.getElementById('filter-finished').addEventListener('change', handleCheckboxChange);
         document.getElementById('filter-unfinished').addEventListener('change', handleCheckboxChange);
-    
+
+        // 添加事件监听器，监听科目选择框状态的变化
+        const subjectCheckboxes = document.querySelectorAll('#filter-math, #filter-english, #filter-chemistry, #filter-physics, #filter-economics');
+        subjectCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', handleSubjectCheckboxChange);
+        });
+
         // 调用 handleCheckboxChange 来根据默认的 "Unfinished" 状态加载作业
         handleCheckboxChange.call(filterUnfinished);
     }
+
     if (!token) {
         // 没有 token 时显示 login 按钮
         document.getElementById('login-btn').style.display = 'block';
@@ -43,38 +50,59 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             if (response.ok) {
                 const userInfo = await response.json();
-                const userName = userInfo.name; // 假设 API 返回的字段是 name
-                
+                const userName = userInfo.englishName;
+                const role = userInfo.role; 
+
                 // 更新页面内容为 "Hi, {name}"
                 document.getElementById('user-name').textContent = userName;
                 document.getElementById('login-btn').style.display = 'none';
                 document.querySelector('.user-container').style.visibility = 'visible';
                 document.querySelector('.user-container').style.opacity = '1';
+
+                // 根据用户角色显示 Add Assignment 和 Edit Assignment 按钮
+                const addAssignmentOption = document.getElementById('add-assignment-option');
+                const editAssignmentOption = document.getElementById('edit-assignment-option'); // 新增 Edit Assignment 按钮
+
+                if (role === 'assistant' || role === 'teacher' || role === 'admin') {
+                    addAssignmentOption.style.visibility = 'visible';
+                    editAssignmentOption.style.visibility = 'visible'; // 显示 Edit Assignment 按钮
+                } else {
+                    addAssignmentOption.style.visibility = 'hidden'; // 隐藏 Add Assignment 按钮
+                    editAssignmentOption.style.visibility = 'hidden'; // 隐藏 Edit Assignment 按钮
+                }
             }
 
         } catch (error) {
             console.error('Failed to fetch user info:', error);
         }
 
-        // 添加点击事件，显示或隐藏 Logout 选项
+        // 添加点击事件，显示或隐藏 Logout 和 Change Password 选项
         document.getElementById('user-info').addEventListener('click', function () {
             const logoutOption = document.getElementById('logout-option');
             const addAssignmentOption = document.getElementById('add-assignment-option');
+            const editAssignmentOption = document.getElementById('edit-assignment-option'); // 新增 Edit Assignment 按钮
+            const changePasswordOption = document.getElementById('change-password-option');
             const triangle = document.getElementById('triangle');
-            
+
             if (!logoutOption.classList.contains('show')) {
                 logoutOption.style.visibility = 'visible';
-                addAssignmentOption.style.visibility = 'visible';
-                logoutOption.classList.add('show'); // 显示 Logout 按钮
-                addAssignmentOption.classList.add('show'); // 显示添加作业按钮
-                triangle.classList.add('rotated'); // 旋转三角形指向下方
+                addAssignmentOption.style.visibility = addAssignmentOption.style.visibility; // 按照当前设置显示或隐藏
+                editAssignmentOption.style.visibility = editAssignmentOption.style.visibility; // 按照当前设置显示或隐藏
+                changePasswordOption.style.visibility = 'visible'; // 显示 Change Password 选项
+                logoutOption.classList.add('show');
+                addAssignmentOption.classList.add('show');
+                editAssignmentOption.classList.add('show'); // 显示 Edit Assignment 选项
+                changePasswordOption.classList.add('show');
+                triangle.classList.add('rotated');
             } else {
-                logoutOption.classList.remove('show'); // 隐藏 Logout 按钮
-                addAssignmentOption.classList.remove('show'); // 隐藏添加作业按钮
-                triangle.classList.remove('rotated'); // 旋转三角形指向上方
+                logoutOption.classList.remove('show');
+                addAssignmentOption.classList.remove('show');
+                editAssignmentOption.classList.remove('show'); // 隐藏 Edit Assignment 选项
+                changePasswordOption.classList.remove('show');
+                triangle.classList.remove('rotated');
             }
         });
-        
+
         // 点击 Logout，清除 token 并恢复 Login 按钮
         document.getElementById('logout-option').addEventListener('click', function () {
             localStorage.removeItem('jwtToken'); // 清除 token
@@ -83,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             document.querySelector('.user-container').style.visibility = 'hidden';
             document.querySelector('.user-container').style.opacity = '0';
         });
-    }
+    }    
 });
 
 function handleCheckboxChange() {
@@ -146,7 +174,6 @@ function handleCheckboxChange() {
             replaceAssignments('/completed_assignments', 'complete', finishedContainer)
         ]);
     }
-    
 
     loadAssignmentsPromise
         .finally(() => {
@@ -154,16 +181,21 @@ function handleCheckboxChange() {
             filterUnfinished.disabled = false;
             isHandlingCheckboxChange = false;
             console.log('Buttons unlocked after loading assignments.');
+
+            // 在加载完作业后应用过滤器
+            applyFilters();
         });
 
     console.log('Finished handling checkboxes.');
-    
+
     isHandlingCheckboxChange = false;
     console.log('Buttons unlocked after loading assignments.');
 }
 
-
-
+// 处理科目选择框变化的函数
+function handleSubjectCheckboxChange() {
+    applyFilters();
+}
 
 async function fetchAssignments(apiEndpoint, lastEvaluatedKey = null, limit = 15) {
     const token = localStorage.getItem('jwtToken');  // 从 localStorage 获取 JWT 令牌
@@ -207,12 +239,20 @@ async function fetchAssignments(apiEndpoint, lastEvaluatedKey = null, limit = 15
     }
 }
 
-
 async function loadMoreAssignments(apiEndpoint, lastEvaluatedKey = null, homeworkType, container) {
     const result = await fetchAssignments(apiEndpoint, lastEvaluatedKey);
     if (result) {
         // 追加作业但不清空容器
         displayAssignments(result.items, homeworkType, container);
+
+        // 将新加载的作业追加到对应的数组中
+        if (homeworkType === 'incomplete') {
+            unfinishedHomework = unfinishedHomework.concat(result.items);
+            localStorage.setItem('unfinishedHomework', JSON.stringify(unfinishedHomework)); // 记录到缓存
+        } else if (homeworkType === 'complete') {
+            finishedHomework = finishedHomework.concat(result.items);
+            localStorage.setItem('finishedHomework', JSON.stringify(finishedHomework)); // 记录到缓存
+        }
 
         // 显示更多按钮逻辑
         const loadMoreButton = document.getElementById('loadMoreButton');
@@ -224,13 +264,14 @@ async function loadMoreAssignments(apiEndpoint, lastEvaluatedKey = null, homewor
         } else {
             loadMoreButton.style.display = 'none';
         }
+
+        // 在加载更多作业后应用过滤器
+        applyFilters();
     }
 }
 
-
-
-// 防抖函数，延迟时间改为 5 秒
-function debounce(func, delay = 5000) { // 默认延迟 5 秒
+// 防抖函数，延迟时间改为 1 秒
+function debounce(func, delay = 1000) { // 默认延迟 1 秒
     if (debounceTimer) {
         clearTimeout(debounceTimer);  // 清除之前的定时器
     }
@@ -272,6 +313,15 @@ async function replaceAssignments(apiEndpoint, homeworkType, container) {
         container.innerHTML = ''; // 仅清空传入的 container
         displayAssignments(result.items, homeworkType, container); // 将作业插入指定容器
 
+        // 将获取到的作业记录到对应的数组中
+        if (homeworkType === 'incomplete') {
+            unfinishedHomework = result.items;
+            localStorage.setItem('unfinishedHomework', JSON.stringify(unfinishedHomework)); // 记录到缓存
+        } else if (homeworkType === 'complete') {
+            finishedHomework = result.items;
+            localStorage.setItem('finishedHomework', JSON.stringify(finishedHomework)); // 记录到缓存
+        }
+
         // 处理 Load More 按钮
         const loadMoreButton = document.getElementById('loadMoreButton');
         if (result.items.length === 15 && result.last_evaluated_key) { // 假设每次加载15个
@@ -282,28 +332,11 @@ async function replaceAssignments(apiEndpoint, homeworkType, container) {
         } else {
             loadMoreButton.style.display = 'none';
         }
+
+        // 在替换作业后应用过滤器
+        applyFilters();
     }
 }
-
-
-async function insertAssignments(apiEndpoint, homeworkType, container) {
-    const result = await fetchAssignments(apiEndpoint);
-    if (result) {
-        displayAssignments(result.items, homeworkType, container); // 将作业插入指定容器
-
-        // 处理 Load More 按钮
-        const loadMoreButton = document.getElementById('loadMoreButton');
-        if (result.last_evaluated_key) {
-            loadMoreButton.style.display = 'block';
-            loadMoreButton.onclick = () => {
-                loadMoreAssignments(apiEndpoint, result.last_evaluated_key, homeworkType, container);
-            };
-        } else {
-            loadMoreButton.style.display = 'none';
-        }
-    }
-}
-
 
 // 显示作业的函数
 function displayAssignments(assignments, homeworkType, container) {
@@ -318,16 +351,22 @@ function displayAssignments(assignments, homeworkType, container) {
     assignments.forEach(assignment => {
         const homeworkItem = document.createElement('div');
         homeworkItem.className = 'homework-item';
+        // 使用 setAttribute 设置作业的相关属性
         homeworkItem.setAttribute('data-subject', assignment['subject']);
+        homeworkItem.setAttribute('data-teacher-name', assignment['teacher-name']);
+        homeworkItem.setAttribute('data-submission-method', assignment['submission-method']);
         homeworkItem.setAttribute('data-status', assignment['completion-status']);
         homeworkItem.setAttribute('data-class-id', assignment['class-id']);
         homeworkItem.setAttribute('data-assignment-id', assignment['assignment-id']);
 
         const contentLines = assignment['assignment-content'].split('\n');
 
+        // 生成作业的 HTML 结构，包括 subject, teacher_name 和 submission_method
         homeworkItem.innerHTML = `
-            <p><strong>${assignment['class-id']} - ${assignment['assignment-title']}</strong>
+            <p><strong>${assignment['subject']} - ${assignment['teacher-name']}</strong>
                (Submit via: ${assignment['submission-method']})
+               <br>
+               <em>${assignment['assignment-title']}</em> 
                <span class="due-date">Due: ${assignment['due-date']}</span></p>
             <ul>
                 ${contentLines.slice(0, 7).map(content => `<li>${content}</li>`).join('')}
@@ -351,10 +390,15 @@ function displayAssignments(assignments, homeworkType, container) {
             const assignmentId = homeworkItem.getAttribute('data-assignment-id');
             const studentId = localStorage.getItem('studentId');
 
+            const newStatus = checkbox.checked ? 'Complete' : 'Incomplete';
+            homeworkItem.setAttribute('data-status', newStatus);
+
             debounce(() => {
-                const newStatus = checkbox.checked ? 'Complete' : 'Incomplete';
                 completeAssignment(studentId, classId, assignmentId, newStatus);
             }, 1000);
+
+            // 状态改变后重新应用过滤器
+            applyFilters();
         });
 
         // 添加展开/收起功能
@@ -388,33 +432,68 @@ function displayAssignments(assignments, homeworkType, container) {
     }
 }
 
+// 应用过滤器的函数
+function applyFilters() {
+    const filterFinished = document.getElementById('filter-finished').checked;
+    const filterUnfinished = document.getElementById('filter-unfinished').checked;
 
-// 淡出并移除元素的函数
-function fadeOutAndRemove(element) {
+    const selectedSubjects = [];
+    const subjectCheckboxes = document.querySelectorAll('#filter-math, #filter-english, #filter-chemistry, #filter-physics, #filter-economics');
+    subjectCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            const subject = checkbox.id.replace('filter-', '').charAt(0).toUpperCase() + checkbox.id.replace('filter-', '').slice(1);
+            selectedSubjects.push(subject);
+        }
+    });
+
+    const allSubjectsSelected = selectedSubjects.length === 0;
+
+    // 遍历所有作业项
+    const homeworkItems = document.querySelectorAll('.homework-item');
+    homeworkItems.forEach(item => {
+        const itemSubject = item.getAttribute('data-subject');
+        const itemStatus = item.getAttribute('data-status'); // 'Complete' or 'Incomplete'
+
+        let subjectMatch = allSubjectsSelected || selectedSubjects.includes(itemSubject);
+        let statusMatch = false;
+
+        if (filterFinished && filterUnfinished) {
+            // 两个过滤器都被勾选，显示所有
+            statusMatch = true;
+        } else if (!filterFinished && !filterUnfinished) {
+            // 两个过滤器都未勾选，显示所有
+            statusMatch = true;
+        } else if (filterFinished && itemStatus === 'Complete') {
+            statusMatch = true;
+        } else if (filterUnfinished && itemStatus === 'Incomplete') {
+            statusMatch = true;
+        }
+
+        if (subjectMatch && statusMatch) {
+            // 显示作业项
+            fadeIn(item);
+        } else {
+            // 隐藏作业项
+            fadeOut(item);
+        }
+    });
+}
+
+// 淡出元素的函数
+function fadeOut(element) {
     element.style.transition = 'opacity 0.5s ease-in-out';
     element.style.opacity = '0';
     element.addEventListener('transitionend', () => {
-        element.remove();
+        element.style.display = 'none';
     }, { once: true });
-}
-
-// 隐藏作业的函数
-function hideAssignmentsByType(type) {
-    const homeworkContainer = document.getElementById('homeworkContainer');
-    const assignmentsToHide = homeworkContainer.querySelectorAll(`.homework-item[data-status="${type === 'incomplete' ? 'Incomplete' : 'Complete'}"]`);
-    
-    assignmentsToHide.forEach(item => {
-        item.style.display = 'none';
-    });
 }
 
 // 淡入元素的函数
 function fadeIn(element) {
+    element.style.display = ''; // 重置 display 属性
     element.style.opacity = '0';
     element.style.transition = 'opacity 0.5s ease-in-out';
     requestAnimationFrame(() => {
         element.style.opacity = '1';
     });
 }
-
-
