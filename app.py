@@ -64,6 +64,10 @@ def add_assignment_page():
 def edit_assignment_page():
     return render_template('edit-assignment.html')
 
+@app.route('/change-password', methods=['GET'])
+def change_password_page():
+    return render_template('change-password.html')
+
 
 # 添加学生API
 @app.route('/add_student', methods=['POST'])
