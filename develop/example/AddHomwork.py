@@ -37,6 +37,9 @@ def insert_assignment_completion(student_id, class_id, assignment_title, assignm
             'due-date': due_date,                         # 作业截止日期
             'assignment-title': assignment_title,         # 作业标题
             'assignment-content': assignment_content,     # 作业详情
+            'teacher-name': teacher_name,                 # 教师姓名
+            'submission-method': submission_method,       # 提交方式
+            'subject': subject,                           # 学科
             'completion-status': status,                  # 作业状态
             'submission-time': submission_time            # 作业提交时间
         }
@@ -51,7 +54,7 @@ def add_assignment_to_class(class_id, assignment_title, assignment_content, due_
     # 为每个学生添加作业记录
     for student in students:
         student_id = student['student-id']
-        insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date)
+        insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject)
     
     print(f"Assignment '{assignment_title}' added to all students in class {class_id}.")
 
@@ -59,11 +62,14 @@ def add_assignment_to_class(class_id, assignment_title, assignment_content, due_
 def example_add_assignment():
     class_id = 'Science102'  # 替换为目标班级的ID
     assignment_title = 'Science HW'  # 作业标题
-    assignment_content = 'asdgasdgasdgasdgadsfgasdg \n asdfasdfj. \n asdgasdg \n alsdkfjasdf \n asldkfj'  # 作业详情
+    assignment_content = '这是科学作业的内容。'  # 作业详情
     due_date = '2024-09-30'  # 作业截止日期
+    teacher_name = 'Mr. Smith'  # 教师姓名
+    submission_method = 'Online'  # 提交方式
+    subject = 'Science'  # 学科
 
     # 为该班级的所有学生添加作业
-    add_assignment_to_class(class_id, assignment_title, assignment_content, due_date)
+    add_assignment_to_class(class_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject)
 
 # 执行示例
 example_add_assignment()
