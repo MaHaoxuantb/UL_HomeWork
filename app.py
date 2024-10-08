@@ -163,13 +163,12 @@ def get_students_in_class(class_id):
             ':class_id': class_id
         }
     )
-    return response['Items']
+    return response.get('Items', [])
 
 # 为学生添加作业记录
-def insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject, status='Incomplete'):
-    assignment_id = str(uuid.uuid4())  # 生成唯一的作业ID
+def insert_assignment_completion(student_id, class_id, assignment_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject, status='Incomplete'):
     class_assignment_id = f"{class_id}#{assignment_id}"  # 组合学科班级ID和作业ID
-    submission_time = datetime.now().isoformat()  # 提交时间
+    submission_time = datetime.now().isoformat()         # 提交时间
     
     assignments_table.put_item(
         Item={
@@ -191,12 +190,11 @@ def insert_assignment_completion(student_id, class_id, assignment_title, assignm
 # 添加作业API
 @app.route('/add_assignment', methods=['POST'])
 @jwt_required()
-@limiter.limit("10 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def add_assignment():
     current_user = get_jwt_identity()
     
     # 验证用户角色，确保只有教师或管理员可以添加作业
-    if current_user['role'] not in ['assistant', 'teacher', 'admin']:
+    if current_user.get('role') not in ['assistant', 'teacher', 'admin']:
         return jsonify({'error': 'Unauthorized access'}), 403
 
     data = request.json
@@ -208,7 +206,17 @@ def add_assignment():
     submission_method = data.get('submission_method')
     subject = data.get('subject')
 
+    # 检查必填字段
+    required_fields = ['class_id', 'assignment_title', 'assignment_content', 'due_date', 'teacher_name', 'submission_method', 'subject']
+    missing_fields = [field for field in required_fields if not data.get(field)]
+    if missing_fields:
+        return jsonify({'error': f'Missing fields: {", ".join(missing_fields)}'}), 400
+    
+    # 生成一个共享的 assignment_id
+    assignment_id = str(uuid.uuid4())
+
     # 查询班级里的所有学生
+    print(class_id)
     students = get_students_in_class(class_id)
     
     if not students:
@@ -216,10 +224,22 @@ def add_assignment():
     
     # 为每个学生添加作业记录
     for student in students:
-        student_id = student['student-id']
-        insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject)
+        student_id = student.get('student-id')
+        if not student_id:
+            continue  # 跳过没有 student-id 的记录
+        insert_assignment_completion(
+            student_id=student_id,
+            class_id=class_id,
+            assignment_id=assignment_id,  # 使用共享的 assignment_id
+            assignment_title=assignment_title,
+            assignment_content=assignment_content,
+            due_date=due_date,
+            teacher_name=teacher_name,
+            submission_method=submission_method,
+            subject=subject
+        )
     
-    return jsonify({'message': 'Assignment added to all students in the class successfully'}), 200
+    return jsonify({'message': 'Assignment added to all students in the class successfully', 'assignment_id': assignment_id}), 200
 
 
 # 分段查询未完成作业API
