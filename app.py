@@ -353,5 +353,46 @@ def complete_assignment():
         return jsonify({'error': str(e)}), 500
 
 
+# 修改用户密码API
+@app.route('/change_password', methods=['POST'])
+@jwt_required()
+def change_password():
+    current_user = get_jwt_identity()
+    student_id = current_user['student_id']
+
+    data = request.json
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+
+    try:
+        # 获取学生信息
+        response = students_table.get_item(Key={'student-id': student_id})
+        if 'Item' not in response:
+            return jsonify({'error': 'Student not found'}), 404
+
+        student = response['Item']
+
+        # 验证旧密码
+        if not check_password_hash(student['key'], old_password):
+            return jsonify({'error': 'Invalid old password'}), 401
+
+        # 更新密码
+        hashed_new_password = generate_password_hash(new_password)
+        students_table.update_item(
+            Key={'student-id': student_id},
+            UpdateExpression="SET #key = :new_key",
+            ExpressionAttributeNames={
+                '#key': 'key'
+            },
+            ExpressionAttributeValues={
+                ':new_key': hashed_new_password
+            }
+        )
+
+        return jsonify({'message': 'Password changed successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
