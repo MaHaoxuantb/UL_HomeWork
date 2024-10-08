@@ -31,7 +31,7 @@ def add_student(student_id, name, english_name, role, email, class_ids, age, gen
 
 # Example data: Modify this section with actual student details
 student_id = '2027SU4831'  # Unique student ID (primary key)
-password = 'mtmtmt'  # An additional key attribute, can be anything you choose
+password = '123456'  # An additional key attribute, can be anything you choose
 name = 'Brett Jiang'  # Student name
 english_name = 'Brett'  # Student English name
 role = 'admain'  # Student role

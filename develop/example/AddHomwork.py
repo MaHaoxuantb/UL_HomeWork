@@ -60,13 +60,13 @@ def add_assignment_to_class(class_id, assignment_title, assignment_content, due_
 
 # 示例使用
 def example_add_assignment():
-    class_id = 'Science102'  # 替换为目标班级的ID
-    assignment_title = 'Science HW'  # 作业标题
-    assignment_content = '这是科学作业的内容。'  # 作业详情
-    due_date = '2024-09-30'  # 作业截止日期
-    teacher_name = 'Mr. Smith'  # 教师姓名
-    submission_method = 'Online'  # 提交方式
-    subject = 'Science'  # 学科
+    class_id = 'PreFA/Mt8'  # 替换为目标班级的ID
+    assignment_title = 'Math HW'  # 作业标题
+    assignment_content = 'Test math assignment'  # 作业详情
+    due_date = '2024-10-30'  # 作业截止日期
+    teacher_name = 'sdkfasdf'  # 教师姓名
+    submission_method = 'F'  # 提交方式
+    subject = 'math'  # 学科
 
     # 为该班级的所有学生添加作业
     add_assignment_to_class(class_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject)
