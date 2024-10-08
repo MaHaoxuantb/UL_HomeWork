@@ -26,8 +26,10 @@ CORS(app)
 limiter = Limiter(
     key_func=lambda: get_remote_address() if not request.endpoint.startswith('auth') else get_jwt_identity().get('student_id'),
     app=app,
-    default_limits=["3000 per day", "500 per hour"]  # 设置全局速率限制
+    default_limits=["200 per day", "100 per hour"]  # 设置全局速率限制
 )
+
+limiter.init_app(app, application_limits=["3000 per day", "500 per hour"]) 
 
 # 初始化DynamoDB客户端
 dynamodb = boto3.resource('dynamodb')
