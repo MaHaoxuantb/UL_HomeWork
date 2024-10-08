@@ -98,8 +98,11 @@ def login():
 @app.route('/get_student_info', methods=['POST'])
 @jwt_required()
 def get_student_info():
+    identity = get_jwt_identity()
+    student_id = identity.get('student_id')
+
     data = request.json
-    student_id = data.get('student_id')
+    requested_student_id = data.get('student_id')
 
     try:
         response = students_table.get_item(Key={'student-id': student_id})
@@ -177,11 +180,13 @@ def add_assignment():
     
     return jsonify({'message': 'Assignment added to all students in the class successfully'}), 200
 
+
 # 分段查询未完成作业API
 @app.route('/incomplete_assignments', methods=['GET'])
 @jwt_required()
 def get_incomplete_assignments():
     try:
+        current_user = get_jwt_identity()
         student_id = get_jwt_identity()  # 获取JWT中的student_id
         last_evaluated_key = request.args.get('last_evaluated_key', None)
         limit = int(request.args.get('limit', 15))
@@ -231,6 +236,7 @@ def get_incomplete_assignments():
 @jwt_required()
 def get_completed_assignments():
     try:
+        current_user = get_jwt_identity()
         student_id = get_jwt_identity()  # 获取JWT中的student_id
         last_evaluated_key = request.args.get('last_evaluated_key', None)
         limit = int(request.args.get('limit', 15))
@@ -252,6 +258,10 @@ def get_completed_assignments():
         }
 
         if last_evaluated_key:
+            try:
+                last_evaluated_key = json.loads(last_evaluated_key)
+            except json.JSONDecodeError:
+                return jsonify({'error': 'Invalid last_evaluated_key format'}), 400
             query_kwargs['ExclusiveStartKey'] = last_evaluated_key
 
         query_kwargs['ScanIndexForward'] = False  # 按截止日期从现在到过去排序
@@ -274,6 +284,7 @@ def get_completed_assignments():
 @jwt_required()
 def get_all_assignments():
     try:
+        current_user = get_jwt_identity()
         student_id = get_jwt_identity()  # 获取JWT中的student_id
         last_evaluated_key = request.args.get('last_evaluated_key', None)
         limit = int(request.args.get('limit', 15))
@@ -292,6 +303,10 @@ def get_all_assignments():
         }
 
         if last_evaluated_key:
+            try:
+                last_evaluated_key = json.loads(last_evaluated_key)
+            except json.JSONDecodeError:
+                return jsonify({'error': 'Invalid last_evaluated_key format'}), 400
             query_kwargs['ExclusiveStartKey'] = last_evaluated_key
 
         query_kwargs['ScanIndexForward'] = False  # 按截止日期从现在到过去排序
@@ -314,6 +329,7 @@ def get_all_assignments():
 @jwt_required()
 def complete_assignment():
     data = request.json
+    current_user = get_jwt_identity()
     student_id = data.get('student_id')
     class_id = data.get('class_id')
     assignment_id = data.get('assignment_id')
