@@ -76,20 +76,23 @@ def login():
     data = request.json
     student_id = data.get('username')
     password = data.get('password')
-    
+
     try:
         response = students_table.get_item(Key={'student-id': student_id})
         if 'Item' not in response:
             return jsonify({'error': 'Student not found'}), 404
-        
+
         student = response['Item']
         if check_password_hash(student['key'], password):
-            access_token = create_access_token(identity=student_id, expires_delta=timedelta(days=7))
+            # 在令牌中包含用户的角色信息
+            role = student.get('role')
+            access_token = create_access_token(identity={'student_id': student_id, 'role': role}, expires_delta=timedelta(days=7))
             return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
         else:
             return jsonify({'error': 'Invalid password'}), 401
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 # 查询学生信息
 @app.route('/get_student_info', methods=['POST'])
@@ -149,6 +152,12 @@ def insert_assignment_completion(student_id, class_id, assignment_title, assignm
 @app.route('/add_assignment', methods=['POST'])
 @jwt_required()
 def add_assignment():
+    current_user = get_jwt_identity()
+    
+    # 验证用户角色，确保只有教师或管理员可以添加作业
+    if current_user['role'] not in ['assistant', 'teacher', 'admin']:
+        return jsonify({'error': 'Unauthorized access'}), 403
+
     data = request.json
     class_id = data.get('class_id')
     assignment_title = data.get('assignment_title')
