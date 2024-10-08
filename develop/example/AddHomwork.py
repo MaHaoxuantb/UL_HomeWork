@@ -23,7 +23,7 @@ def get_students_in_class(class_id):
     return response['Items']
 
 # 为学生添加作业记录
-def insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date, status='Incomplete'):
+def insert_assignment_completion(student_id, class_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject, status='Incomplete'):
     assignment_id = str(uuid.uuid4())  # 生成唯一的作业ID
     class_assignment_id = f"{class_id}#{assignment_id}"  # 组合学科班级ID和作业ID
     submission_time = datetime.now().isoformat()  # 提交时间
@@ -47,7 +47,7 @@ def insert_assignment_completion(student_id, class_id, assignment_title, assignm
     print(f"Assignment added for student {student_id} in class {class_id}")
 
 # 为特定班级的所有学生添加作业
-def add_assignment_to_class(class_id, assignment_title, assignment_content, due_date):
+def add_assignment_to_class(class_id, assignment_title, assignment_content, due_date, teacher_name, submission_method, subject):
     # 获取班级所有学生
     students = get_students_in_class(class_id)
     
