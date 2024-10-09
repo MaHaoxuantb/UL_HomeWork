@@ -111,7 +111,7 @@ def add_student():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    student_id = data.get('username')
+    username = data.get('username')
     password = data.get('password')
 
     if not username or not password:
@@ -164,7 +164,6 @@ def get_student_info():
             return jsonify({'error': 'student_id is required'}), 422
 
         if 'Item' in response:
-            print(f"Response from database: {response}")
             return jsonify(response['Item']), 200
         else:
             return jsonify({'message': 'Student not found'}), 404
