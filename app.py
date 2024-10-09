@@ -164,7 +164,6 @@ def get_student_info():
             return jsonify({'error': 'student_id is required'}), 422
 
         if 'Item' in response:
-            print(f"Response from database: {response}")
             return jsonify(response['Item']), 200
         else:
             return jsonify({'message': 'Student not found'}), 404
@@ -236,7 +235,6 @@ def add_assignment():
     assignment_id = str(uuid.uuid4())
 
     # 查询班级里的所有学生
-    print(class_id)
     students = get_students_in_class(class_id)
     
     if not students:
