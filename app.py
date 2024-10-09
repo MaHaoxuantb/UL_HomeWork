@@ -114,19 +114,35 @@ def login():
     student_id = data.get('username')
     password = data.get('password')
 
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required'}), 400
+
     try:
-        response = students_table.get_item(Key={'student-id': student_id})
-        if 'Item' not in response:
+        # 使用二级索引通过用户名查找学生信息
+        response = students_table.query(
+            IndexName='name-student-id-index',  # 使用你创建的二级索引
+            KeyConditionExpression=boto3.dynamodb.conditions.Key('name').eq(username)
+        )
+
+        # 检查查询结果
+        if response['Count'] == 0:
             return jsonify({'error': 'Student not found'}), 404
 
-        student = response['Item']
+        student = response['Items'][0]
+
+        # 检查密码是否正确
         if check_password_hash(student['key'], password):
             # 在令牌中包含用户的角色信息
             role = student.get('role')
-            access_token = create_access_token(identity={'student_id': student_id, 'role': role}, expires_delta=timedelta(days=7))
+            student_id = student.get('student-id')
+            access_token = create_access_token(
+                identity={'student_id': student_id, 'role': role},
+                expires_delta=timedelta(days=7)
+            )
             return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
         else:
             return jsonify({'error': 'Invalid password'}), 401
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
