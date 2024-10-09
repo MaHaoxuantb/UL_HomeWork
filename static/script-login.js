@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showError('Please enter Password');
         } else {
             try {
-                const response = await fetch('http://127.0.0.1:8000/login', {
+                const response = await fetch('http://127.0.0.1:6000/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
