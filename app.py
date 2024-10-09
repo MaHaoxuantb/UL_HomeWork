@@ -235,7 +235,6 @@ def add_assignment():
     assignment_id = str(uuid.uuid4())
 
     # 查询班级里的所有学生
-    print(class_id)
     students = get_students_in_class(class_id)
     
     if not students:
