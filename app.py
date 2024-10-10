@@ -128,18 +128,13 @@ def login():
         if response['Count'] == 0:
             return jsonify({'error': 'Student not found'}), 404
 
-        student = response['Items'][0]
-
-        # 检查密码是否正确
+        student = response['Item']
         if check_password_hash(student['key'], password):
             # 在令牌中包含用户的角色信息
             role = student.get('role')
-            student_id = student.get('student-id')
-            access_token = create_access_token(
-                identity={'student_id': student_id, 'role': role},
-                expires_delta=timedelta(days=7)
-            )
-            return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
+            access_token = create_access_token(identity={'student_id': student_id, 'role': role}, expires_delta=timedelta(days=7))
+            # 在登录成功响应中添加 student_id
+            return jsonify({'message': 'Login successful', 'access_token': access_token, 'student_id': student_id}), 200
         else:
             return jsonify({'error': 'Invalid password'}), 401
 
@@ -395,6 +390,7 @@ def get_all_assignments():
 @jwt_required()
 @limiter.limit("20 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 def complete_assignment():
+    print(request.json)
     data = request.json
     current_user = get_jwt_identity()
     student_id = data.get('student_id')
