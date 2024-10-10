@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (!token || !studentId) {
         // 用户未登录时，提示用户并跳转到登录页面
-        /*alert('You are not logged in. Please log in first.');
         window.location.href = '/login'; // 如果没有登录信息，跳转到登录页面*/
     } else {
         // 默认勾选 "Unfinished" 选择框
@@ -35,7 +34,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('login-btn').style.display = 'block';
         document.querySelector('.user-container').style.visibility = 'hidden';
         document.querySelector('.user-container').style.opacity = '0';
-        window.location.href = '/login'; // 如果没有登录信息，跳转到登录页面*/
     } else {
         // 有 token 时获取用户信息
         try {
