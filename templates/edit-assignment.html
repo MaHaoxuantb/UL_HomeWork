@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Assignment</title>
+    <link rel="stylesheet" href="../static/edit-assignment.css">
+</head>
+<body>
+    <div class="content-wrapper">
+        <header>
+            <h1>Edit Assignment</h1>
+        </header>
+        <main>
+            <div class="form-container">
+                <form id="edit-assignment-form">
+                    <label for="class-id">Class ID:</label>
+                    <select id="class-id" name="class-id" size="1" required></select>
+
+                    <label for="due-date">Due Date:</label>
+                    <input type="date" id="due-date" name="due-date" required>
+
+                    <label for="subject">Subject:</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">Select Subject</option>
+                        <option value="Math">Math</option>
+                        <option value="English">English</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Economics">Economics</option>
+                    </select>
+
+                    <label for="teacher-name">Teacher Name:</label>
+                    <select id="teacher-name" name="teacher-name" required>
+                        <option value="">Select Teacher</option>
+                    </select>
+
+                    <label for="submission-method">Submission Method:</label>
+                    <select id="submission-method" name="submission-method" required>
+                        <option value="Firefly">Firefly</option>
+                        <option value="Dingtalk">Dingtalk</option>
+                        <option value="Class">Class</option>
+                    </select>
+
+                    <label for="assignment-title">Assignment Title:</label>
+                    <input type="text" id="assignment-title" name="assignment-title" required>
+
+                    <label for="assignment-content">Assignment Content:</label>
+                    <textarea id="assignment-content" name="assignment-content" rows="5" required></textarea>
+
+                    <button type="submit" id="update-btn">Update</button>
+                </form>                
+            </div>
+        </main>
+
+        <!-- 引用 edit-assignment.js -->
+        <script src="../static/edit-assignment.js"></script>
+    </div>
+</body>
+</html>

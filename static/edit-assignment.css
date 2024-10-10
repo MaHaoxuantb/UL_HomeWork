@@ -1,0 +1,115 @@
+body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    background-image: url('background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.content-wrapper {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    width: 600px; /* Wider container */
+}
+
+header h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: black;
+}
+
+/* 选择框的基本样式 */
+#class-id, #submission-method {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    height: auto;
+    background-color: white;
+}
+
+/* 控制选择框的高度及溢出内容 */
+#class-id {
+    height: 40px;
+    overflow-y: hidden;
+}
+
+#class-id option {
+    padding: 10px;
+}
+
+#class-id:focus {
+    height: auto; /* 聚焦时高度自动调整，显示所有选项 */
+    max-height: 200px;
+    overflow-y: auto; /* 聚焦时显示滚动条 */
+}
+
+.form-container {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    color: black;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, textarea, select {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+/* 使 Class ID, Due Date, Subject 和 Teacher Name 依次排列 */
+#class-id, #due-date, #subject, #teacher-name, #submission-method {
+    width: 100%;
+}
+
+/* Style the textarea and other wide elements */
+textarea, #assignment-title {
+    width: calc(100% - 20px);
+}
+
+/* 保持一致性，调整新添加的选择框样式 */
+#subject, #teacher-name, #submission-method {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    height: auto;
+    background-color: white;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}

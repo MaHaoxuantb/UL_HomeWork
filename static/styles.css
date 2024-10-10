@@ -1,0 +1,527 @@
+
+/* 移动端样式 */
+@media screen and (max-width: 768px) {
+  
+    /* 1. 调整 header 布局为横向排列，并分散对齐 */
+    header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0;
+    }
+
+    h1 {
+        display: inline-block; /* 将 h1 设置为行内块元素，避免换行 */
+    }
+
+    /* 2. 隐藏 header 中的 h2 元素，简化移动端头部 */
+    header h2 {
+      display: none;
+    }
+    
+    /* 3. 调整登录按钮的位置，从绝对定位改为静态定位 */
+    #login-btn {
+      position: static; /* 移除绝对定位 */
+      margin-left: 0; /* 移除左外边距 */
+      order: 2; /* 确保按钮在 header 的右侧 */
+    }
+    
+    /* 4. 将 main 容器的方向改为垂直排列 */
+    main.main {
+      flex-direction: column;
+    }
+    
+    /* 5. 重新排列 sidebar 和 homework-wrapper 的顺序 */
+    .sidebar {
+      order: 2; /* 确保 sidebar 在下方 */
+      width: 100%; /* 使 sidebar 占满全宽 */
+      margin: 10px 0; /* 上下外边距 */
+    }
+    
+    .homework-wrapper {
+      order: 1; /* 确保 homework-wrapper 在上方 */
+      width: 100%; /* 使 homework-wrapper 占满全宽 */
+    }
+    
+    /* 6. 确保 homework-list 和 load-more-container 占满全宽 */
+    #homeworkContainer {
+      width: 100%;
+      margin: 0;
+      padding: 10px;
+    }
+    
+    #load-more-container {
+      margin: 10px 0; /* 上下外边距，避免被遮挡 */
+    }
+    
+    /* 7. 可选：调整 footer 的内边距以适应移动端 */
+    footer {
+      padding: 10px;
+    }
+    
+    /* 8. 确保用户信息容器在移动端正确显示 */
+    .user-container {
+      position: static; /* 移除绝对定位 */
+      align-items: flex-end; /* 右对齐 */
+      margin-top: 10px; /* 上外边距 */
+    }
+    
+    /* /* 9. 可选：调整 Sidebar 中按钮和复选框的样式以适应移动端 */
+    .sidebar .category button, 
+    .sidebar input[type="checkbox"] {
+      width: 100%; /* 使按钮和复选框占满全宽 */
+      padding: 10px; /* 增加内边距，提升触控体验 */
+    }
+    
+    /* 10. 可选：调整 Load More 按钮的样式以适应移动端 */
+    #loadMoreButton {
+      font-size: 18px; /* 增大字体，提升可点击性 */
+      padding: 10px 20px; /* 增加内边距 */
+    }
+    
+  }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* 确保内容充满页面 */
+}
+
+main {
+    display: flex;
+    flex: 1; /* 使侧边栏和作业列表保持在同一行 */
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    align-items: flex-start; /* 保证两者上方对齐 */
+}
+
+body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    background-image: url('background.png');
+    background-size: cover; /* 保证背景图片覆盖整个页面 */
+    background-repeat: no-repeat; /* 不重复 */
+    background-attachment: fixed; /* 背景固定，页面滚动时不移动 */
+    background-position: center; /* 图片居中 */
+    color: white;
+}
+
+header {
+    /*position: relative; 确保标题正常排列 */
+    padding-bottom: 20px; /* 给下面的内容留出空间 */
+}
+
+h1 {
+    display: inline-block; /* 将 h1 设置为行内块元素，避免换行 */
+}
+
+#logo-image {
+    width: 100px; /* 控制图片宽度 */
+    height: auto; /* 保持图片的宽高比 */
+    vertical-align: middle; /* 使图片和文本垂直居中对齐 */
+    margin-left: 10px; /* 给图片和标题之间添加一些间距 */
+    display: inline-block; /* 确保图片也在同一行显示 */
+}
+
+
+/* 主题色为蓝色，调高透明系数 */
+header, footer, .sidebar, .homework-list {
+    background-color: rgba(255, 255, 255, 0.2); /* 半透明蓝色背景 */
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    color: black; /* 黑色文字 */
+}
+
+/* Sidebar 样式 */
+.sidebar {
+    width: 200px; /* 确保 Sidebar 有固定宽度 */
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px;
+    flex-shrink: 0; /* 防止侧边栏缩小 */
+}
+
+
+
+.category h4 {
+    margin-bottom: 10px;
+}
+
+/* Homework List */
+.homework-list {
+    flex: 1; /* 占据剩余空间 */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    border-radius: 5px;
+    overflow-y: auto;
+    /* 移除 margin-left */
+}
+
+.homework-list li, .transparent-box li {
+    list-style-position: inside; /* 确保列表符号在背景框内 */
+    padding-left: 10px; /* 给列表符号和文字留出空间 */
+    margin-left: 0; /* 确保没有额外的左边距 */
+}
+
+.homework-list, .transparent-box, header, .sidebar, footer {
+    background-color: rgba(255, 255, 255, 0.2); /* 白色半透明背景 */
+    color: black; /* 黑色文字 */
+    border-radius: 5px;
+    padding: 20px;
+    transition: background-color 1.5s ease, color 1.5s ease; /* 过渡动画：1.5秒 */
+}
+
+.dark-mode .homework-list, 
+.dark-mode .transparent-box,
+.dark-mode header, 
+.dark-mode .sidebar,
+.dark-mode footer {
+    background-color: rgba(0, 0, 0, 0.8); /* 黑色半透明背景 */
+    color: white; /* 白色文字 */
+    transition: background-color 1.5s ease, color 1.5s ease; /* 过渡动画：1.5秒 */
+}
+
+/* 调整作业框的透明度 */
+.homework-item {
+    position: relative; /* 使子元素可以使用绝对定位 */
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+}
+
+.homework-status-container {
+    position: absolute; /* 固定在作业条目右下角 */
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+.homework-status-container label {
+    display: flex;
+    align-items: center;
+}
+
+.homework-status {
+    margin-right: 5px; /* 给 "Finished" 文本和复选框之间一些间距 */
+}
+
+
+.homework-item p {
+    margin-bottom: 5px;
+}
+
+.due-date {
+    float: right;
+}
+
+.expand {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+footer {
+    background-color: rgba(255, 255, 255, 0.2); /* 白色背景 */
+    color: black; /* 黑色文字 */
+    text-align: center;
+    padding: 10px;
+    position: relative; /* 不再使用固定定位，改为相对页面内容 */
+    margin-top: auto;
+    /*clear: both; /* 确保 footer 显示在内容下面 */
+}
+
+/* 现有的 login 按钮样式 */
+#login-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#login-btn:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+/* 用户信息容器 */
+.user-container {
+    display: flex;
+    flex-direction: column; /* 垂直排列 */
+    align-items: flex-end; /* 右对齐 */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: visibility 0.3s, opacity 0.3s ease;
+}
+
+/* user-info 按钮样式 */
+#user-info {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center; /* 与三角形符号水平对齐 */
+}
+
+/* 绘制一个等边三角形 */
+#triangle {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid white; /* 三角形的颜色 */
+    margin-left: 10px; /* 与 user-info 的间距 */
+    transition: transform 0.3s ease; /* 添加旋转动画 */
+    transform: rotate(0deg); /* 初始状态指向上方 */
+}
+
+/* 三角形旋转后的状态，指向下方 */
+#triangle.rotated {
+    transform: rotate(180deg);
+}
+
+/* 添加作业按钮 */
+#add-assignment-option {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 3px;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    margin-top: 0px; /* 与 user-info 之间的间距 */
+}
+
+#add-assignment-option.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#add-assignment-option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#edit-assignment-option {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 3px;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    margin-top: 0px; /* 与 user-info 之间的间距 */
+}
+
+#edit-assignment-option.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#edit-assignment-option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#change-password-option {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 3px;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    margin-top: 0px; /* 与 user-info 之间的间距 */
+}
+
+/* 显示按钮的效果 */
+#change-password-option.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: visible;
+}
+
+#change-password-option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Logout按钮 */
+#logout-option {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 3px;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden; /* 初始为隐藏 */
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    margin-top: 0px; /* 与 user-info 之间的间距 */
+}
+
+#logout-option.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0); /* 恢复到原始位置 */
+}
+
+#logout-option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+
+
+
+
+#settings-btn {
+    background: none;
+    color: white;
+    border: none;
+    margin-top: 20px;
+    width: auto; /* 自动适应文本和图标宽度 */
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px; /* 给按钮内的内容更多空间 */
+    border-radius: 8px; /* 调整圆角 */
+    display: flex; /* 使用 flexbox 来排列图标和文字 */
+    align-items: center; /* 垂直居中 */
+}
+
+#settings-btn:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+#settings-btn img {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px; /* 给图标和文本之间添加间距 */
+}
+
+
+.category button, input[type="checkbox"] {
+    background-color: rgba(255, 255, 255, 0.2); /* 蓝色按钮 */
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.expand a {
+    cursor: pointer;
+    color: white;
+}
+
+
+.category button:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+/* Expand 链接丝滑动画 */
+.details {
+    display: none;
+    transition: max-height 0.5s ease-out;
+}
+
+.homework-item.expanded .details {
+    display: block;
+}
+
+.details.expanded {
+    display: block;
+    opacity: 1;
+    max-height: 200px;
+}
+
+.expand a {
+    color: white;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.expand a:hover {
+    color: cyan;
+}
+
+/* Homework Wrapper */
+.homework-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* 占据剩余空间 */
+    margin: 10px; /* 与 Sidebar 的间隔 */
+}
+
+/* 确保 HomeworkContainer 占据全部宽度 */
+#homeworkContainer {
+    width: 100%;
+    /* 保持现有样式 */
+    flex: 1;
+    padding: 20px;
+    margin-left: 0; /* 移除左边距，避免与 wrapper 冲突 */
+    overflow-y: auto;
+}
+
+/* Load More 按钮容器样式 */
+#load-more-container {
+    display: flex;
+    justify-content: center; /* 按钮居中 */
+    margin: 20px 0; /* 上下间距 */
+    width: 100%;
+}
+
+/* 可选：调整按钮样式以更好地适应新布局 */
+/* Load More Button 样式 */
+#loadMoreButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#loadMoreButton:hover {
+    color: cyan;
+}

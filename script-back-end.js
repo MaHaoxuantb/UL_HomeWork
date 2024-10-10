@@ -1,0 +1,81 @@
+let token = '';  // 保存 JWT 令牌
+
+// 用户登录
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    fetch('http://[2a01:4f8:201:2063::4095:d92c]:80/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.access_token) {
+            token = data.access_token;  // 保存 JWT 令牌
+            alert('Logged in successfully!');
+        } else {
+            alert('Login failed');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+// 获取学生的作业信息
+document.getElementById('assignmentsForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const student_id = document.getElementById('studentIdForAssignments').value;
+
+    fetch('http://[2a01:4f8:201:2063::4095:d92c]:80/get_assignments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            student_id: student_id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.length) {
+            document.getElementById('result').innerHTML = `<h2>Assignments for ${student_id}</h2>`;
+            data.forEach(assignment => {
+                document.getElementById('result').innerHTML += `
+                    <p>Assignment Title: ${assignment['assignment-title']}, Status: ${assignment['completion-status']}, Due Date: ${assignment['due-date']}</p>`;
+            });
+        } else {
+            alert('No assignments found.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+// 获取学生信息
+document.getElementById('studentInfoForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const student_id = document.getElementById('studentIdForInfo').value;
+
+    fetch('http://[2a01:4f8:201:2063::4095:d92c]:80/get_student_info', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            student_id: student_id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('result').innerHTML = `<h2>Student Info:</h2><p>${JSON.stringify(data)}</p>`;
+    })
+    .catch(error => console.error('Error:', error));
+});
