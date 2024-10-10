@@ -282,7 +282,6 @@ function debounce(func, delay = 1000) { // 默认延迟 1 秒
 
 // 完成作业的API调用函数
 function completeAssignment(studentId, classId, assignmentId, status) {
-    console.log('Sending completeAssignment with data:', { studentId, classId, assignmentId, status });
     fetch('/complete_assignment', {
         method: 'POST',
         headers: {
@@ -389,8 +388,21 @@ function displayAssignments(assignments, homeworkType, container) {
             </div>
         `;
 
-        console.log('Assignment data:', assignment);
+        // 添加Delete按钮 (只有特定角色才能看到)
+        const role = localStorage.getItem('role');  // 从缓存中获取用户角色
+        if (role === 'assistant' || role === 'teacher' || role === 'admin') {
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'expand-button';  // 使用与 Expand 按钮相同的样式
+            deleteButton.textContent = 'Delete';
 
+            deleteButton.addEventListener('click', () => {
+                showDeleteConfirmation(assignmentTitle, assignment['class-id'], assignment['assignment-id']);
+            });
+
+            homeworkItem.querySelector('.homework-status-container').insertAdjacentElement('beforebegin', deleteButton);
+
+        }
+        
         // 添加事件监听器用于更新完成状态
         const checkbox = homeworkItem.querySelector('.homework-status');
         checkbox.addEventListener('change', function () {
@@ -438,6 +450,78 @@ function displayAssignments(assignments, homeworkType, container) {
     if (lastHomeworkItem) {
         lastHomeworkItem.style.marginBottom = '20px';
     }
+}
+
+// 弹出第一个确认框
+function showDeleteConfirmation(assignmentTitle, classId, assignmentId) {
+    const confirmationBox = document.createElement('div');
+    confirmationBox.className = 'confirmation-box';
+    confirmationBox.innerHTML = `
+        <p>Are you sure you would like to delete this assignment? ${assignmentTitle}</p>
+        <button class="no-button">No</button>
+        <button class="yes-button">Yes</button>
+    `;
+
+    document.body.appendChild(confirmationBox);
+
+    // No 按钮取消框
+    confirmationBox.querySelector('.no-button').addEventListener('click', () => {
+        document.body.removeChild(confirmationBox);
+    });
+
+    // Yes 按钮弹出第二个确认框
+    confirmationBox.querySelector('.yes-button').addEventListener('click', () => {
+        document.body.removeChild(confirmationBox);
+        showSecondDeleteConfirmation(assignmentTitle, classId, assignmentId);
+    });
+}
+
+// 弹出第二个确认框
+function showSecondDeleteConfirmation(assignmentTitle, classId, assignmentId) {
+    const secondConfirmationBox = document.createElement('div');
+    secondConfirmationBox.className = 'confirmation-box';
+    secondConfirmationBox.innerHTML = `
+        <p>Are you sure you really want to delete this assignment? ${assignmentTitle}</p>
+        <button class="yes-button">Yes</button>
+        <button class="no-button">No</button>
+    `;
+
+    document.body.appendChild(secondConfirmationBox);
+
+    // No 按钮取消框
+    secondConfirmationBox.querySelector('.no-button').addEventListener('click', () => {
+        document.body.removeChild(secondConfirmationBox);
+    });
+
+    // Yes 按钮调用删除作业API
+    secondConfirmationBox.querySelector('.yes-button').addEventListener('click', () => {
+        document.body.removeChild(secondConfirmationBox);
+        deleteAssignment(classId, assignmentId);
+    });
+}
+
+// 调用删除作业的API
+function deleteAssignment(classId, assignmentId) {
+    fetch('/delete_assignment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+        },
+        body: JSON.stringify({ class_id: classId, assignment_id: assignmentId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);  // 显示删除成功信息
+            // 可以在此处调用重新加载作业列表的逻辑
+        } else {
+            alert('Failed to delete the assignment');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 // 应用过滤器的函数
