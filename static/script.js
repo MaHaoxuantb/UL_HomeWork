@@ -282,7 +282,7 @@ function debounce(func, delay = 1000) { // 默认延迟 1 秒
 
 // 完成作业的API调用函数
 function completeAssignment(studentId, classId, assignmentId, status) {
-    onsole.log('Sending completeAssignment with data:', { studentId, classId, assignmentId, status });
+    console.log('Sending completeAssignment with data:', { studentId, classId, assignmentId, status });
     fetch('/complete_assignment', {
         method: 'POST',
         headers: {
