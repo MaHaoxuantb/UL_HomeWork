@@ -1,3 +1,5 @@
+# Code is wrong
+"""
 import boto3
 import uuid
 from datetime import datetime
@@ -73,3 +75,4 @@ def example_add_assignment():
 
 # 执行示例
 example_add_assignment()
+"""
