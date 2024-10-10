@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import boto3
+from boto3.dynamodb.conditions import Key
 
 from datetime import datetime
 from datetime import timedelta
@@ -14,7 +15,6 @@ import secrets
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from redis import Redis
-
 
 
 
@@ -424,6 +424,8 @@ def complete_assignment():
 
         if 'Attributes' in response:
             return jsonify({'message': f'Assignment marked as {status}', 'updated': response['Attributes']}), 200
+            print("asdfasdfasdfasdfasdf")
+            print(jsonify(response))
         else:
             return jsonify({'message': 'Assignment not found'}), 404
     except Exception as e:
@@ -471,6 +473,50 @@ def change_password():
         return jsonify({'message': 'Password changed successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# 删除某个班级的特定作业
+@app.route('/delete_class_assignment', methods=['DELETE'])
+@jwt_required()
+@limiter.limit("5 per minute")
+def delete_class_assignment():
+    current_user = get_jwt_identity()
+
+    # 权限检查，确保只有教师或管理员可以执行此操作
+    if current_user.get('role') not in ['teacher', 'admin']:
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    data = request.json
+    class_id = data.get('class_id')
+    assignment_id = data.get('assignment_id')
+
+    if not class_id or not assignment_id:
+        return jsonify({'error': 'Missing class ID or assignment ID'}), 400
+
+    try:
+        # 查询属于该班级的特定作业
+        response = assignments_table.query(
+            IndexName='ClassAssignmentIndex',  # 假设你创建了一个以 class-id 和 assignment-id 为索引的二级索引
+            KeyConditionExpression=Key('class-id').eq(class_id) & Key('assignment-id').eq(assignment_id)
+        )
+
+        items = response.get('Items', [])
+        if not items:
+            return jsonify({'message': 'Assignment not found'}), 404
+
+        # 删除该特定作业
+        for item in items:
+            assignments_table.delete_item(
+                Key={
+                    'student-id': item['student-id'],
+                    'class-id#assignment-id': item['class-id#assignment-id']
+                }
+            )
+
+        return jsonify({'message': 'Assignment deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 
 if __name__ == '__main__':
