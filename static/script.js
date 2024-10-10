@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // 添加事件监听器，监听完成状态选择框状态的变化
         document.getElementById('filter-finished').addEventListener('change', handleCheckboxChange);
-        document.getElementById('filter-unfinished').addEventListener('change', handleCheckboxChange);
+        document.getElementById('filter-unfinished').addEventListener('change', handleCheckboxChange);        
 
         // 添加事件监听器，监听科目选择框状态的变化
         const subjectCheckboxes = document.querySelectorAll('#filter-math, #filter-english, #filter-chemistry, #filter-physics, #filter-economics');
@@ -123,8 +123,21 @@ function handleCheckboxChange(event) {
     const filterFinished = document.getElementById('filter-finished');
     const filterUnfinished = document.getElementById('filter-unfinished');
 
-    // 使用事件对象来确定哪个复选框被点击
-    const target = event.target;
+    let target;
+    if (event) {
+        target = event.target;
+    } else {
+        // 如果没有事件对象，假设是从初始化调用，基于当前复选框状态
+        // 例如，可以检查哪个复选框当前被选中
+        if (filterFinished.checked) {
+            target = filterFinished;
+        } else if (filterUnfinished.checked) {
+            target = filterUnfinished;
+        } else {
+            // 默认情况下，假设未完成被选中
+            target = filterUnfinished;
+        }
+    }
 
     if (target.id === 'filter-finished') {
         filterUnfinished.checked = false;
@@ -188,6 +201,7 @@ function handleCheckboxChange(event) {
 
     console.log('Finished handling checkboxes.');
 }
+
 
 
 // 处理科目选择框变化的函数
@@ -269,6 +283,7 @@ async function loadMoreAssignments(apiEndpoint, lastEvaluatedKey = null, homewor
 }
 
 // 防抖函数，延迟时间改为 1 秒
+// 防抖函数，延迟时间改为 1 秒
 function debounce(func, delay = 1000) { // 默认延迟 1 秒
     if (debounceTimer) {
         clearTimeout(debounceTimer);  // 清除之前的定时器
@@ -277,6 +292,7 @@ function debounce(func, delay = 1000) { // 默认延迟 1 秒
         func();  // 延迟结束后执行传入的函数
     }, delay);  // 设置新的定时器，延迟执行
 }
+
 
 // 完成作业的API调用函数
 function completeAssignment(studentId, classId, assignmentId, status) {
