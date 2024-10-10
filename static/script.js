@@ -232,7 +232,6 @@ async function fetchAssignments(apiEndpoint, lastEvaluatedKey = null, limit = 15
         } else {
             const errorData = await response.json();
             console.error('API请求失败:', errorData);
-            alert(`Failed to load assignments: ${errorData.msg || errorData.error}`);
         }
     } catch (error) {
         console.error('请求发生错误:', error);
