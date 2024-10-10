@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }    
 });
 
-function handleCheckboxChange() {
+function handleCheckboxChange(event) {
     if (isHandlingCheckboxChange) {
         return; // 如果当前已经在处理选项变更，则直接返回
     }
@@ -187,10 +187,8 @@ function handleCheckboxChange() {
         });
 
     console.log('Finished handling checkboxes.');
-
-    isHandlingCheckboxChange = false;
-    console.log('Buttons unlocked after loading assignments.');
 }
+
 
 // 处理科目选择框变化的函数
 function handleSubjectCheckboxChange() {
@@ -355,7 +353,7 @@ function displayAssignments(assignments, homeworkType, container) {
         homeworkItem.setAttribute('data-subject', assignment['subject']);
         homeworkItem.setAttribute('data-teacher-name', assignment['teacher-name']);
         homeworkItem.setAttribute('data-submission-method', assignment['submission-method']);
-        homeworkItem.setAttribute('data-status', assignment['completion-status']);
+        homeworkItem.setAttribute('data-status', assignment['status']);
         homeworkItem.setAttribute('data-class-id', assignment['class-id']);
         homeworkItem.setAttribute('data-assignment-id', assignment['assignment-id']);
 
@@ -379,7 +377,7 @@ function displayAssignments(assignments, homeworkType, container) {
             </div>
             <div class="homework-status-container">
                 <label><input type="checkbox" class="homework-status"
-                    ${assignment['completion-status'] === 'Complete' ? 'checked' : ''}> Finished</label>
+                    ${assignment['status'] === 'Complete' ? 'checked' : ''}> Finished</label>
             </div>
         `;
 
@@ -452,7 +450,7 @@ function applyFilters() {
     const homeworkItems = document.querySelectorAll('.homework-item');
     homeworkItems.forEach(item => {
         const itemSubject = item.getAttribute('data-subject');
-        const itemStatus = item.getAttribute('data-status'); // 'Complete' or 'Incomplete'
+        const itemStatus = item.getAttribute('data-status'); // 'Complete' 或 'Incomplete'
 
         let subjectMatch = allSubjectsSelected || selectedSubjects.includes(itemSubject);
         let statusMatch = false;
