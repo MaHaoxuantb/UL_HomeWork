@@ -428,6 +428,7 @@ def complete_assignment():
         )
 
         if 'Attributes' in response:
+            print("asdfasdfasdf")
             return jsonify({'message': f'Assignment marked as {status}', 'updated': response['Attributes']}), 200
             print("asdfasdfasdfasdfasdf")
             print(jsonify(response))
