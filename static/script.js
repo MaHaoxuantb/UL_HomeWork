@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('login-btn').style.display = 'block';
         document.querySelector('.user-container').style.visibility = 'hidden';
         document.querySelector('.user-container').style.opacity = '0';
+        window.location.href = '/login'; // 如果没有登录信息，跳转到登录页面*/
     } else {
         // 有 token 时获取用户信息
         try {
@@ -231,7 +232,6 @@ async function fetchAssignments(apiEndpoint, lastEvaluatedKey = null, limit = 15
         } else {
             const errorData = await response.json();
             console.error('API请求失败:', errorData);
-            alert(`Failed to load assignments: ${errorData.msg || errorData.error}`);
         }
     } catch (error) {
         console.error('请求发生错误:', error);
