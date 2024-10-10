@@ -203,7 +203,7 @@ async function fetchAssignments(apiEndpoint, lastEvaluatedKey = null, limit = 15
     // 检查 JWT 是否存在
     if (!token) {
         console.error("JWT token is missing");
-        alert("JWT token is missing, please log in.");
+        alert("Please Login");
         return;
     }
 
@@ -282,31 +282,36 @@ function debounce(func, delay = 1000) { // 默认延迟 1 秒
 
 // 完成作业的API调用函数
 function completeAssignment(studentId, classId, assignmentId, status) {
-    console.log(classId);
+    onsole.log('Sending completeAssignment with data:', { studentId, classId, assignmentId, status });
     fetch('/complete_assignment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` // 假设JWT存储在本地
-      },
-      body: JSON.stringify({
-        student_id: studentId,
-        class_id: classId,
-        assignment_id: assignmentId,
-        status: status // 发送作业的完成状态
-      })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+        },
+        body: JSON.stringify({
+            student_id: studentId,
+            class_id: classId,
+            assignment_id: assignmentId,
+            status: status
+        })
     })
     .then(response => {
-      if (response.ok) {
-        console.log('作业状态已更新');
-      } else {
-        console.error('更新作业状态时出错');
-      }
+        if (response.ok) {
+            console.log('作业状态已更新');
+        } else {
+            response.json().then(errorData => {
+                console.error('更新作业状态时出错:', errorData);
+                alert(`Error updating assignment status: ${errorData.error || errorData.message}`);
+            });
+        }
     })
     .catch(error => {
-      console.error('网络或服务器错误:', error);
+        console.error('网络或服务器错误:', error);
+        alert('Network or server error occurred while updating assignment status.');
     });
 }
+
 
 async function replaceAssignments(apiEndpoint, homeworkType, container) {
     const result = await fetchAssignments(apiEndpoint);
@@ -383,6 +388,8 @@ function displayAssignments(assignments, homeworkType, container) {
                     ${assignment['completion-status'] === 'Complete' ? 'checked' : ''}> Finished</label>
             </div>
         `;
+
+        console.log('Assignment data:', assignment);
 
         // 添加事件监听器用于更新完成状态
         const checkbox = homeworkItem.querySelector('.homework-status');
