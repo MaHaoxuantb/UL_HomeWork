@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 获取学生的班级 ID
     try {
-        const response = await fetch('http://127.0.0.1:8000/get_student_info', {
+        const response = await fetch('/get_student_info', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const limit = 50; // 每次请求的数量，根据需要调整
 
         do {
-            const url = new URL('http://127.0.0.1:8000/all_assignments');
+            const url = new URL('/all_assignments');
             url.searchParams.append('limit', limit);
             if (lastEvaluatedKey) {
                 url.searchParams.append('last_evaluated_key', JSON.stringify(lastEvaluatedKey));
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('Submitting assignment data:', assignmentData);
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/add_assignment', {
+            const response = await fetch('/add_assignment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
