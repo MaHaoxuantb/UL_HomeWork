@@ -430,8 +430,6 @@ def complete_assignment():
         if 'Attributes' in response:
             print("asdfasdfasdf")
             return jsonify({'message': f'Assignment marked as {status}', 'updated': response['Attributes']}), 200
-            print("asdfasdfasdfasdfasdf")
-            print(jsonify(response))
         else:
             return jsonify({'message': 'Assignment not found'}), 404
     except Exception as e:
