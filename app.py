@@ -108,6 +108,7 @@ def add_student():
 
 
 # 学生登录API
+# 学生登录API
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -128,18 +129,23 @@ def login():
         if response['Count'] == 0:
             return jsonify({'error': 'Student not found'}), 404
 
-        student = response['Item']
+        student = response['Items'][0]  # 注意：这里使用 'Items' 列表来访问查询结果
         if check_password_hash(student['key'], password):
+            # 获取原始的 student-id 并映射为一个新的变量
+            student_id_value = student.get('student-id')
+            
             # 在令牌中包含用户的角色信息
             role = student.get('role')
-            access_token = create_access_token(identity={'student_id': student_id, 'role': role}, expires_delta=timedelta(days=7))
+            access_token = create_access_token(identity={'student_id': student_id_value, 'role': role}, expires_delta=timedelta(days=7))
+            
             # 在登录成功响应中添加 student_id
-            return jsonify({'message': 'Login successful', 'access_token': access_token, 'student_id': student_id}), 200
+            return jsonify({'message': 'Login successful', 'access_token': access_token, 'student_id': student_id_value}), 200
         else:
             return jsonify({'error': 'Invalid password'}), 401
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 
 # 查询学生信息
