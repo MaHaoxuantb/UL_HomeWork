@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded', function () {
         hideError(); // 点击登录时，先隐藏错误信息
 
         if (!studentId && !password) {
-            showError('Please enter both Student ID and Password');
+            showError('Please enter both User Name and Password');
         } else if (!studentId) {
-            showError('Please enter Student ID');
+            showError('Please enter User Name');
         } else if (!password) {
             showError('Please enter Password');
         } else {
             try {
-                const response = await fetch('http://127.0.0.1:6000/login', {
+                const response = await fetch('/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
