@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // 有 token 时获取用户信息
         try {
             const studentId = localStorage.getItem('studentId'); // 假设 studentId 已存储
-            const response = await fetch('http://127.0.0.1:8000/get_student_info', {
+            const response = await fetch('/get_student_info', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
