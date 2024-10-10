@@ -70,6 +70,8 @@ def change_password_page():
 
 
 # 添加学生API
+@jwt_required()
+@limiter.limit("1 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 @app.route('/add_student', methods=['POST'])
 def add_student():
     data = request.json
@@ -108,7 +110,8 @@ def add_student():
 
 
 # 学生登录API
-# 学生登录API
+@jwt_required()
+@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
