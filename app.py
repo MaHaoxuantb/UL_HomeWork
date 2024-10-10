@@ -472,22 +472,16 @@ def change_password():
 
 
 # 删除某个班级的特定作业
-@app.route('/delete_class_assignment', methods=['DELETE'])
 @jwt_required()
-@limiter.limit("5 per minute")
-def delete_class_assignment():
-    current_user = get_jwt_identity()
-
-    # 权限检查，确保只有教师或管理员可以执行此操作
-    if current_user.get('role') not in ['teacher', 'admin']:
-        return jsonify({'error': 'Unauthorized access'}), 403
-
+@limiter.limit("5 per hour")
+@app.route('/delete_assignment', methods=['POST'])
+def delete_assignment():
     data = request.json
     class_id = data.get('class_id')
     assignment_id = data.get('assignment_id')
 
     if not class_id or not assignment_id:
-        return jsonify({'error': 'Missing class ID or assignment ID'}), 400
+        return jsonify({'error': 'Class ID and Assignment ID are required'}), 400
 
     try:
         # 查询属于该班级的特定作业
