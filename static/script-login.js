@@ -7,14 +7,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 登录按钮点击事件
     document.getElementById('login-btn').addEventListener('click', async () => {
-        const studentId = document.getElementById('student-id').value;
+        const Uesr_Name = document.getElementById('student-id').value;
         const password = document.getElementById('password').value;
 
         hideError(); // 点击登录时，先隐藏错误信息
 
-        if (!studentId && !password) {
+        if (!Uesr_Name && !password) {
             showError('Please enter both User Name and Password');
-        } else if (!studentId) {
+        } else if (!Uesr_Name) {
             showError('Please enter User Name');
         } else if (!password) {
             showError('Please enter Password');
@@ -26,21 +26,21 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        username: studentId,
+                        username: Uesr_Name,
                         password: password
                     })
                 });
-
+        
                 const data = await response.json();
                 if (data.access_token) {
                     const token = data.access_token;  // 保存 JWT 令牌
-                    
-                    // 保存 studentId, jwtToken 和 role
-                    localStorage.setItem('studentId', studentId);
+                    const studentId = data.student_id;  // 获取返回的Student Id
+        
+                    // 将JWT和Student Id存储到localStorage
                     localStorage.setItem('jwtToken', token);
-                    
+                    localStorage.setItem('studentId', studentId);
+        
                     // 触发登录成功事件
-                    window.dispatchEvent(new CustomEvent('loginSuccess', { detail: { studentId } }));
                     window.location.href = '/'; // 登录成功后跳转
                 } else {
                     showError('Login failed');
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 showError('An error occurred while logging in');
             }
         }
+        
     });
 
     // 切换密码隐藏/显示功能
