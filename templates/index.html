@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap">
     <link rel="stylesheet" href="../static/styles.css">
     <link rel="icon" href="../static/logo.ico" type="image/x-icon">
-
 </head>
 <body>
     <div class="content-wrapper">
@@ -56,8 +55,6 @@
                     <button id="loadMoreButton" style="display:none;">Load More</button>
                 </div>
             </div>
-            
-            
         </main>
 
         <footer>
@@ -69,32 +66,26 @@
     <button id="login-btn" onclick="window.location.href='/login'">Login</button>
     
     <!-- 用户登录后的信息和按钮 -->
-    <div class="user-container" style="visibility: hidden; opacity: 0;">
+    <div class="user-container">
         <div id="user-info">
-            Hi, <span id="user-name"></span>
+            <span id="user-name"></span>
             <div id="triangle"></div>
         </div>
 
-        <div id="change-password-option" onclick="window.location.href='/change-password'" style="visibility: hidden;">
-            Change Password
-        </div>
-
-        <div id="logout-option" style="visibility: hidden;">
-            Logout
-        </div>
-    
-        <!-- Add Assignment 按钮 -->
-        <div id="add-assignment-option" onclick="window.location.href='/add-assignment'" style="visibility: hidden;">
+        <!-- 下拉菜单选项 -->
+        <div id="add-assignment-option" class="user-option" onclick="window.location.href='/add-assignment'">
             Add Assignment
         </div>
 
-        <!-- Edit Assignment 按钮 -->
-        <div id="edit-assignment-option" onclick="window.location.href='/edit-assignment'" style="visibility: hidden;">
-            Edit Assignment
+        <div id="change-password-option" class="user-option" onclick="window.location.href='/change-password'">
+            Change Password
+        </div>
+
+        <div id="logout-option" class="user-option">
+            Logout
         </div>
     </div>
 
-    
     <script src="../static/script.js"></script>
 </body>
 </html>

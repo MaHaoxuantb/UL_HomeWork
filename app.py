@@ -60,9 +60,10 @@ def login_page():
 def add_assignment_page():
     return render_template('add-assignment.html')
 
-@app.route('/edit-assignment', methods=['GET'])
+@app.route('/edit-assignment')
 def edit_assignment_page():
-    return render_template('edit-assignment.html')
+    return render_template('edit-assignment.html')  # 或其他方式返回前端页面
+
 
 @app.route('/change-password', methods=['GET'])
 def change_password_page():
@@ -110,6 +111,8 @@ def add_student():
 
 
 # 学生登录API
+@jwt_required()
+@limiter.limit("5 per minute")  # 每个客户端（基于 JWT）每分钟最多请求
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -260,6 +263,101 @@ def add_assignment():
         )
     
     return jsonify({'message': 'Assignment added to all students in the class successfully', 'assignment_id': assignment_id}), 200
+
+# 编辑作业API
+@app.route('/edit_assignment', methods=['POST'])
+@jwt_required()
+def edit_assignment():
+    current_user = get_jwt_identity()
+    
+    # 验证用户角色，确保只有教师或管理员可以编辑作业
+    if current_user.get('role') not in ['assistant', 'teacher', 'admin']:
+        print(f"Unauthorized access attempt by user: {current_user}")
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    data = request.json
+    if not data:
+        print("No JSON payload received")
+        return jsonify({'error': 'No JSON payload received'}), 400
+
+    # 提取字段
+    assignment_id = data.get('assignment_id')
+    class_id = data.get('class_id')
+    assignment_title = data.get('assignment_title')
+    assignment_content = data.get('assignment_content')
+    due_date = data.get('due_date')
+    teacher_name = data.get('teacher_name')
+    submission_method = data.get('submission_method')
+    subject = data.get('subject')
+
+    # 检查必填字段
+    required_fields = ['assignment_id', 'class_id', 'assignment_title', 'assignment_content', 'due_date', 'teacher_name', 'submission_method', 'subject']
+    missing_fields = [field for field in required_fields if not data.get(field)]
+    if missing_fields:
+        print(f"Missing fields: {missing_fields}")
+        return jsonify({'error': f'Missing fields: {", ".join(missing_fields)}'}), 400
+
+    # 查询班级里的所有学生
+    students = get_students_in_class(class_id)
+    
+    if not students:
+        print(f"No students found in class_id: {class_id}")
+        return jsonify({'error': 'No students found in the specified class'}), 404
+
+    # 为每个学生更新作业记录
+    for student in students:
+        student_id = student.get('student-id')
+        if not student_id:
+            print(f"Skipping student without student-id: {student}")
+            continue  # 跳过没有 student-id 的记录
+
+        class_assignment_id = f"{class_id}#{assignment_id}"  # 组合 class-id 和 assignment-id
+        submission_time = datetime.now().isoformat()         # 提交时间
+
+        try:
+            # 使用 DynamoDB 的 update_item 方法进行更新
+            response = assignments_table.update_item(
+                Key={
+                    'student-id': student_id,
+                    'class-id#assignment-id': class_assignment_id
+                },
+                UpdateExpression="""
+                    SET
+                        #due_date = :due_date,
+                        #assignment_title = :assignment_title,
+                        #assignment_content = :assignment_content,
+                        #teacher_name = :teacher_name,
+                        #submission_method = :submission_method,
+                        #subject = :subject,
+                        #submission_time = :submission_time
+                """,
+                ExpressionAttributeNames={
+                    '#due_date': 'due-date',
+                    '#assignment_title': 'assignment-title',
+                    '#assignment_content': 'assignment-content',
+                    '#teacher_name': 'teacher-name',
+                    '#submission_method': 'submission-method',
+                    '#subject': 'subject',
+                    '#submission_time': 'submission-time'  # 修正为 'submission-time'
+                },
+                ExpressionAttributeValues={
+                    ':due_date': due_date,
+                    ':assignment_title': assignment_title,
+                    ':assignment_content': assignment_content,
+                    ':teacher_name': teacher_name,
+                    ':submission_method': submission_method,
+                    ':subject': subject,
+                    ':submission_time': submission_time
+                }
+            )
+            print(f"Updated assignment for student_id: {student_id} with class_assignment_id: {class_assignment_id}")
+        except Exception as e:
+            print(f"Failed to update assignment for student_id: {student_id}. Error: {e}")
+            return jsonify({'error': f'Failed to update assignment for student_id: {student_id}'}), 500
+
+    print(f"Assignment {assignment_id} updated successfully by user: {current_user}")
+    return jsonify({'message': 'Assignment updated successfully'}), 200
+
 
 
 # 分段查询未完成作业API
@@ -426,8 +524,9 @@ def complete_assignment():
         )
 
         if 'Attributes' in response:
-            print("asdfasdfasdf")
             return jsonify({'message': f'Assignment marked as {status}', 'updated': response['Attributes']}), 200
+            print("asdfasdfasdfasdfasdf")
+            print(jsonify(response))
         else:
             return jsonify({'message': 'Assignment not found'}), 404
     except Exception as e:
@@ -516,4 +615,4 @@ def delete_assignment():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=8000)
+    app.run(debug=True, host='127.0.0.1', port=6000)

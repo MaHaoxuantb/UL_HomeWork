@@ -14,12 +14,29 @@
         <main>
             <div class="form-container">
                 <form id="edit-assignment-form">
+                    <!-- Class ID Field -->
                     <label for="class-id">Class ID:</label>
                     <select id="class-id" name="class-id" size="1" required></select>
+                
+                    <!-- Due Date, Hour, Minute Fields -->
+                    <div class="form-row">
+                        <label for="due-date">Due Date:</label>
+                        <input type="date" id="due-date" name="due-date" required>
+                        <label for="due-hour">Hour:</label>
+                        <select id="due-hour" name="due-hour"></select>
+                        <label for="due-minute">Minute:</label>
+                        <select id="due-minute" name="due-minute"></select>
+                    </div>
 
-                    <label for="due-date">Due Date:</label>
-                    <input type="date" id="due-date" name="due-date" required>
+                    <!-- Assignment Title -->
+                    <label for="assignment-title">Assignment Title:</label>
+                    <input type="text" id="assignment-title" name="assignment-title" required>
 
+                    <!-- Assignment Content -->
+                    <label for="assignment-content">Assignment Content:</label>
+                    <textarea id="assignment-content" name="assignment-content" rows="5" required></textarea>
+                
+                    <!-- Subject, Teacher, Submission Method Fields -->
                     <label for="subject">Subject:</label>
                     <select id="subject" name="subject" required>
                         <option value="">Select Subject</option>
@@ -42,18 +59,12 @@
                         <option value="Class">Class</option>
                     </select>
 
-                    <label for="assignment-title">Assignment Title:</label>
-                    <input type="text" id="assignment-title" name="assignment-title" required>
-
-                    <label for="assignment-content">Assignment Content:</label>
-                    <textarea id="assignment-content" name="assignment-content" rows="5" required></textarea>
-
+                    <!-- Update Button -->
                     <button type="submit" id="update-btn">Update</button>
                 </form>                
             </div>
         </main>
 
-        <!-- 引用 edit-assignment.js -->
         <script src="../static/edit-assignment.js"></script>
     </div>
 </body>

@@ -9,111 +9,105 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (!token || !studentId) {
         // 用户未登录时，提示用户并跳转到登录页面
-        window.location.href = '/login'; // 如果没有登录信息，跳转到登录页面*/
-    } else {
-        // 默认勾选 "Unfinished" 选择框
-        const filterUnfinished = document.getElementById('filter-unfinished');
-        filterUnfinished.checked = true; // 默认勾选 Unfinished 选择框
-
-        // 添加事件监听器，监听完成状态选择框状态的变化
-        document.getElementById('filter-finished').addEventListener('change', handleCheckboxChange);
-        document.getElementById('filter-unfinished').addEventListener('change', handleCheckboxChange);
-
-        // 添加事件监听器，监听科目选择框状态的变化
-        const subjectCheckboxes = document.querySelectorAll('#filter-math, #filter-english, #filter-chemistry, #filter-physics, #filter-economics');
-        subjectCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', handleSubjectCheckboxChange);
-        });
-
-        // 调用 handleCheckboxChange 来根据默认的 "Unfinished" 状态加载作业
-        handleCheckboxChange.call(filterUnfinished);
+        alert('您尚未登录，请先登录。');
+        window.location.href = '/login'; // 如果没有登录信息，跳转到登录页面
+        return;
     }
 
-    if (!token) {
-        // 没有 token 时显示 login 按钮
-        document.getElementById('login-btn').style.display = 'block';
-        document.querySelector('.user-container').style.visibility = 'hidden';
-        document.querySelector('.user-container').style.opacity = '0';
-    } else {
-        // 有 token 时获取用户信息
-        try {
-            const studentId = localStorage.getItem('studentId'); // 假设 studentId 已存储
-            const response = await fetch('/get_student_info', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ student_id: studentId })
+    // 有 token 时获取用户信息
+    try {
+        const response = await fetch('/get_student_info', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ student_id: studentId })
+        });
+
+        if (response.ok) {
+            const userInfo = await response.json();
+            const userName = userInfo.englishName;
+            const role = userInfo.role;
+            
+            // 存储角色信息到 localStorage
+            localStorage.setItem('role', role);
+
+            // 更新页面内容为 "Hi, {name}"
+            document.getElementById('user-name').textContent = `Hi, ${userName}`;
+            document.getElementById('login-btn').style.display = 'none';
+
+            // 显示 user-container
+            document.querySelector('.user-container').style.display = 'flex';
+            document.getElementById('login-btn').style.display = 'none';
+
+            // 根据用户角色显示 Add Assignment 和 Edit Assignment 按钮
+            const addAssignmentOption = document.getElementById('add-assignment-option');
+
+            if (['assistant', 'teacher', 'admin'].includes(role)) {
+                addAssignmentOption.style.visibility = 'visible';
+            } else {
+                addAssignmentOption.style.visibility = 'hidden'; // 隐藏 Add Assignment 按钮
+            }
+
+            // 设置默认勾选 "Unfinished" 选择框
+            const filterUnfinished = document.getElementById('filter-unfinished');
+            filterUnfinished.checked = true; // 默认勾选 Unfinished 选择框
+
+            // 添加事件监听器，监听完成状态选择框状态的变化
+            document.getElementById('filter-finished').addEventListener('change', handleCheckboxChange);
+            document.getElementById('filter-unfinished').addEventListener('change', handleCheckboxChange);
+
+            // 添加事件监听器，监听科目选择框状态的变化
+            const subjectCheckboxes = document.querySelectorAll('#filter-math, #filter-english, #filter-chemistry, #filter-physics, #filter-economics');
+            subjectCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', handleSubjectCheckboxChange);
             });
 
-            if (response.ok) {
-                const userInfo = await response.json();
-                const userName = userInfo.englishName;
-                const role = userInfo.role; 
+            // 调用 handleCheckboxChange 来根据默认的 "Unfinished" 状态加载作业
+            handleCheckboxChange(); // 不再依赖 event 对象
 
-                // 更新页面内容为 "Hi, {name}"
-                document.getElementById('user-name').textContent = userName;
-                document.getElementById('login-btn').style.display = 'none';
-                document.querySelector('.user-container').style.visibility = 'visible';
-                document.querySelector('.user-container').style.opacity = '1';
-
-                // 根据用户角色显示 Add Assignment 和 Edit Assignment 按钮
-                const addAssignmentOption = document.getElementById('add-assignment-option');
-                const editAssignmentOption = document.getElementById('edit-assignment-option'); // 新增 Edit Assignment 按钮
-
-                if (role === 'assistant' || role === 'teacher' || role === 'admin') {
-                    addAssignmentOption.style.visibility = 'visible';
-                    editAssignmentOption.style.visibility = 'visible'; // 显示 Edit Assignment 按钮
-                } else {
-                    addAssignmentOption.style.visibility = 'hidden'; // 隐藏 Add Assignment 按钮
-                    editAssignmentOption.style.visibility = 'hidden'; // 隐藏 Edit Assignment 按钮
-                }
-            }
-
-        } catch (error) {
-            console.error('Failed to fetch user info:', error);
-        }
-
-        // 添加点击事件，显示或隐藏 Logout 和 Change Password 选项
-        document.getElementById('user-info').addEventListener('click', function () {
-            const logoutOption = document.getElementById('logout-option');
-            const addAssignmentOption = document.getElementById('add-assignment-option');
-            const editAssignmentOption = document.getElementById('edit-assignment-option'); // 新增 Edit Assignment 按钮
-            const changePasswordOption = document.getElementById('change-password-option');
-            const triangle = document.getElementById('triangle');
-
-            if (!logoutOption.classList.contains('show')) {
-                logoutOption.style.visibility = 'visible';
-                addAssignmentOption.style.visibility = addAssignmentOption.style.visibility; // 按照当前设置显示或隐藏
-                editAssignmentOption.style.visibility = editAssignmentOption.style.visibility; // 按照当前设置显示或隐藏
-                changePasswordOption.style.visibility = 'visible'; // 显示 Change Password 选项
-                logoutOption.classList.add('show');
-                addAssignmentOption.classList.add('show');
-                editAssignmentOption.classList.add('show'); // 显示 Edit Assignment 选项
-                changePasswordOption.classList.add('show');
-                triangle.classList.add('rotated');
-            } else {
-                logoutOption.classList.remove('show');
-                addAssignmentOption.classList.remove('show');
-                editAssignmentOption.classList.remove('show'); // 隐藏 Edit Assignment 选项
-                changePasswordOption.classList.remove('show');
-                triangle.classList.remove('rotated');
-            }
-        });
-
-        // 点击 Logout，清除 token 并恢复 Login 按钮
-        document.getElementById('logout-option').addEventListener('click', function () {
-            localStorage.removeItem('jwtToken'); // 清除 token
-            localStorage.removeItem('studentId'); // 清除 studentId
+        } else {
+            const errorData = await response.json();
+            // 用户未登录，隐藏 user-container，显示 login 按钮
+            document.querySelector('.user-container').style.display = 'none';
             document.getElementById('login-btn').style.display = 'block';
-            document.querySelector('.user-container').style.visibility = 'hidden';
-            document.querySelector('.user-container').style.opacity = '0';
+            alert(`获取用户信息失败: ${errorData.error}`);
+            console.error('Failed to fetch user info:', errorData);
+            window.location.href = '/login'; // 如果获取用户信息失败，跳转到登录页面
+            return;
+        }
+        // 控制下拉菜单的显示
+        const userInfoButton = document.getElementById('user-info');
+        const triangle = document.getElementById('triangle');
+        const userOptions = document.querySelectorAll('.user-option');
+        const logoutOption = document.getElementById('logout-option');
+
+        userInfoButton.addEventListener('click', () => {
+            triangle.classList.toggle('rotated');
+            userOptions.forEach(option => {
+                option.classList.toggle('show');
+            });
         });
-    }    
+            // 登出功能
+        logoutOption.addEventListener('click', () => {
+            // 清除本地存储中的登录信息
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('studentId');
+            localStorage.removeItem('role');
+            // 跳转到登录页面
+            window.location.href = '/login';
+        });
+    } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        alert('获取用户信息时发生错误。');
+        window.location.href = '/login'; // 如果发生错误，跳转到登录页面
+        return;
+    }
 });
 
-function handleCheckboxChange() {
+// 修正后的 handleCheckboxChange 函数
+function handleCheckboxChange(event) {
     if (isHandlingCheckboxChange) {
         return; // 如果当前已经在处理选项变更，则直接返回
     }
@@ -122,13 +116,21 @@ function handleCheckboxChange() {
     const filterFinished = document.getElementById('filter-finished');
     const filterUnfinished = document.getElementById('filter-unfinished');
 
-    // 使用事件对象来确定哪个复选框被点击
-    const target = event.target;
+    if (event) {
+        const target = event.target;
 
-    if (target.id === 'filter-finished') {
-        filterUnfinished.checked = false;
-    } else if (target.id === 'filter-unfinished') {
-        filterFinished.checked = false;
+        if (target.id === 'filter-finished') {
+            filterUnfinished.checked = false;
+        } else if (target.id === 'filter-unfinished') {
+            filterFinished.checked = false;
+        }
+    } else {
+        // 如果没有事件对象，确保至少一个被勾选
+        if (filterFinished.checked) {
+            filterUnfinished.checked = false;
+        } else if (filterUnfinished.checked) {
+            filterFinished.checked = false;
+        }
     }
 
     console.log('Checkbox states:', { filterFinished: filterFinished.checked, filterUnfinished: filterUnfinished.checked });
@@ -186,12 +188,9 @@ function handleCheckboxChange() {
         });
 
     console.log('Finished handling checkboxes.');
-
-    isHandlingCheckboxChange = false;
-    console.log('Buttons unlocked after loading assignments.');
 }
 
-// 处理科目选择框变化的函数
+// 重构 handleSubjectCheckboxChange 函数
 function handleSubjectCheckboxChange() {
     applyFilters();
 }
@@ -309,7 +308,6 @@ function completeAssignment(studentId, classId, assignmentId, status) {
     });
 }
 
-
 async function replaceAssignments(apiEndpoint, homeworkType, container) {
     const result = await fetchAssignments(apiEndpoint);
     if (result) {
@@ -351,7 +349,10 @@ function displayAssignments(assignments, homeworkType, container) {
         homeworkContainer.insertBefore(titleElement, homeworkContainer.firstChild);
     }
 
+    const role = localStorage.getItem('role');  // 从缓存中获取用户角色
+
     assignments.forEach(assignment => {
+        const assignmentTitle = assignment['assignment-title']; // 定义 assignmentTitle
         const homeworkItem = document.createElement('div');
         homeworkItem.className = 'homework-item';
         // 使用 setAttribute 设置作业的相关属性
@@ -386,19 +387,37 @@ function displayAssignments(assignments, homeworkType, container) {
             </div>
         `;
 
-        // 添加Delete按钮 (只有特定角色才能看到)
-        const role = localStorage.getItem('role');  // 从缓存中获取用户角色
-        if (role === 'assistant' || role === 'teacher' || role === 'admin') {
+        // 添加 Delete 和 Edit 按钮
+        if (['assistant', 'teacher', 'admin'].includes(role)) {
+            // 创建按钮容器
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'button-container';
+
+            // Delete 按钮
             const deleteButton = document.createElement('button');
-            deleteButton.className = 'expand-button';  // 使用与 Expand 按钮相同的样式
+            deleteButton.className = 'delete-button';  // 使用自定义样式
             deleteButton.textContent = 'Delete';
 
             deleteButton.addEventListener('click', () => {
                 showDeleteConfirmation(assignmentTitle, assignment['class-id'], assignment['assignment-id']);
             });
 
-            homeworkItem.querySelector('.homework-status-container').insertAdjacentElement('beforebegin', deleteButton);
+            // Edit 按钮
+            const editButton = document.createElement('button');
+            editButton.className = 'edit-button';  // 使用自定义样式
+            editButton.textContent = 'Edit';
 
+            editButton.addEventListener('click', () => {
+                // 使用 query 参数传递 assignment_id
+                window.location.href = `/edit-assignment?assignment_id=${assignment['assignment-id']}`;
+            });
+
+            // 将按钮添加到按钮容器中
+            buttonContainer.appendChild(deleteButton);
+            buttonContainer.appendChild(editButton);
+
+            // 将按钮容器插入到作业项中
+            homeworkItem.querySelector('.homework-status-container').insertAdjacentElement('beforebegin', buttonContainer);
         }
         
         // 添加事件监听器用于更新完成状态
@@ -432,13 +451,12 @@ function displayAssignments(assignments, homeworkType, container) {
                 } else {
                     fullContent.style.display = 'none';
                     expandButton.textContent = 'Expand';
-                    homeworkItem.classList.remove('expanded');
                     homeworkItem.insertBefore(expandButton.parentElement, fullContent);
                 }
             });
         }
 
-        /// 添加淡入效果并追加作业到容器中
+        // 添加淡入效果并追加作业到容器中
         container.appendChild(homeworkItem);
         fadeIn(homeworkItem);
     });
@@ -512,7 +530,10 @@ function deleteAssignment(classId, assignmentId) {
     .then(data => {
         if (data.message) {
             alert(data.message);  // 显示删除成功信息
-            // 可以在此处调用重新加载作业列表的逻辑
+
+            // 从界面移除被删除的作业项
+            const assignmentElements = document.querySelectorAll(`.homework-item[data-class-id="${classId}"][data-assignment-id="${assignmentId}"]`);
+            assignmentElements.forEach(el => el.remove());
         } else {
             alert('Failed to delete the assignment');
         }
