@@ -2,12 +2,15 @@ const token = localStorage.getItem('jwtToken'); // 从 LocalStorage 获取 token
 
 document.addEventListener('DOMContentLoaded', async function() {
     const dueDateInput = document.getElementById('due-date');
+    const dueHourInput = document.getElementById('due-hour');
+    const dueMinuteInput = document.getElementById('due-minute');
     const classIdSelect = document.getElementById('class-id');
     const subjectSelect = document.getElementById('subject');
     const teacherSelect = document.getElementById('teacher-name');
-    const submissionMethod = document.getElementById('submission-method');
-    const assignmentTitle = document.getElementById('assignment-title');
-    const assignmentContent = document.getElementById('assignment-content');
+    const submissionMethodSelect = document.getElementById('submission-method');
+    const assignmentTitleInput = document.getElementById('assignment-title');
+    const assignmentContentInput = document.getElementById('assignment-content');
+    const updateBtn = document.getElementById('update-btn');
 
     const teachersBySubject = {
         Math: ['David Sagarino', 'Sanchia Yu'],
@@ -48,9 +51,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             body: JSON.stringify({ student_id: localStorage.getItem('studentId') })
         });
 
+        // 检查响应状态
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Failed to fetch class information: ${response.status} ${errorText}`);
+        }
+
         const result = await response.json();
 
-        if (response.ok && result['class-ids']) {
+        if (result['class-ids']) {
             result['class-ids'].forEach(classId => {
                 const option = document.createElement('option');
                 option.value = classId; // 使用 class-id 值
@@ -59,108 +68,67 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         } else {
             alert('无法获取班级信息。');
-            console.error('Failed to fetch class information:', result);
         }
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
 
-    // 添加事件监听器以触发作业检查
-    classIdSelect.addEventListener('change', debounce(checkAssignment, 300));
-    dueDateInput.addEventListener('change', debounce(checkAssignment, 300));
-    subjectSelect.addEventListener('change', debounce(checkAssignment, 300));
-    teacherSelect.addEventListener('change', debounce(checkAssignment, 300));
+    // 解析 URL 中的 assignment_id
+    const urlParams = new URLSearchParams(window.location.search);
+    const assignmentId = urlParams.get('assignment_id');
 
-    // 防抖函数，避免频繁调用 API
-    function debounce(func, delay) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
+    if (assignmentId) {
+        // 如果存在 assignment_id，则为编辑模式
+        loadAssignmentDetails(assignmentId);
     }
 
-    async function checkAssignment() {
-        const classId = classIdSelect.value;
-        const dueDate = dueDateInput.value;
-        const subject = subjectSelect.value;
-        const teacherName = teacherSelect.value;
+    // 加载特定 assignment 的详细信息从本地存储
+    function loadAssignmentDetails(assignmentId) {
+        const unfinishedHomework = JSON.parse(localStorage.getItem('unfinishedHomework')) || [];
+        const finishedHomework = JSON.parse(localStorage.getItem('finishedHomework')) || [];
+        const allAssignments = [...unfinishedHomework, ...finishedHomework];
 
-        // 仅在所有字段都有值时进行搜索
-        if (!classId || !dueDate || !subject || !teacherName) {
-            console.log('Incomplete fields, skipping assignment check.');
-            return;
+        const assignment = allAssignments.find(a => a['assignment-id'] === assignmentId);
+
+        if (assignment) {
+            // 填充小时选择框
+            for (let i = 0; i < 24; i++) {
+                const option = document.createElement('option');
+                option.value = i.toString().padStart(2, '0');
+                option.textContent = i.toString().padStart(2, '0');
+                dueHourInput.appendChild(option);
+            }
+
+            // 填充分钟选择框
+            for (let i = 0; i < 60; i++) {
+                const option = document.createElement('option');
+                option.value = i.toString().padStart(2, '0');
+                option.textContent = i.toString().padStart(2, '0');
+                dueMinuteInput.appendChild(option);
+            }
+
+            // 解析日期和时间
+            const [datePart, timePart] = assignment['due-date'].split(' ');
+            const [dueHour, dueMinute] = timePart.split(':');
+
+            dueDateInput.value = datePart;
+            dueHourInput.value = dueHour.padStart(2, '0'); // 确保小时格式为两位数
+            dueMinuteInput.value = dueMinute.padStart(2, '0'); // 确保分钟格式为两位数
+
+            subjectSelect.value = assignment['subject'];
+            subjectSelect.dispatchEvent(new Event('change'));
+
+            setTimeout(() => {
+                teacherSelect.value = assignment['teacher-name'];
+            }, 100);
+
+            classIdSelect.value = assignment['class-id'];
+            submissionMethodSelect.value = assignment['submission-method'];
+            assignmentTitleInput.value = assignment['assignment-title'];
+            assignmentContentInput.value = assignment['assignment-content'];
+        } else {
+            alert('未找到对应的作业详情。');
         }
-
-        console.log('Checking assignment with:', { classId, dueDate, subject, teacherName });
-
-        try {
-            const allAssignments = await fetchAllAssignments();
-            console.log(`Fetched ${allAssignments.length} assignments.`);
-            console.log('All Assignments:', allAssignments); // 查看所有作业数据
-
-            // 搜索匹配的作业
-            const matchingAssignment = allAssignments.find(a => 
-                a['class-id'] === classId && 
-                a['due-date'].split(' ')[0] === dueDate && // 修改这里，从 'T' 改为 ' '
-                a['subject'] === subject && 
-                a['teacher-name'] === teacherName
-            );
-
-            console.log('Matching Assignment:', matchingAssignment);
-
-            if (matchingAssignment) {
-                // 填充 Submission Method
-                submissionMethod.value = matchingAssignment['submission-method'] || '';
-                // 填充 Assignment Title 和 Content
-                assignmentTitle.value = matchingAssignment['assignment-title'] || '';
-                assignmentContent.value = matchingAssignment['assignment-content'] || '';
-                console.log('Form fields updated.');
-            } else {
-                // 清空作业信息
-                submissionMethod.value = '';
-                assignmentTitle.value = '';
-                assignmentContent.value = '';
-                console.log('No matching assignment found. Form fields cleared.');
-            }
-        } catch (error) {
-            console.error('Error fetching assignments:', error);
-            alert(`Error fetching assignments: ${error.message}`);
-        }
-    }
-
-    // 函数：递归获取所有作业（处理分页）
-    async function fetchAllAssignments() {
-        let allAssignments = [];
-        let lastEvaluatedKey = null;
-        const limit = 50; // 每次请求的数量，根据需要调整
-
-        do {
-            const url = new URL('/all_assignments');
-            url.searchParams.append('limit', limit);
-            if (lastEvaluatedKey) {
-                url.searchParams.append('last_evaluated_key', JSON.stringify(lastEvaluatedKey));
-            }
-
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                const errorResult = await response.json();
-                throw new Error(errorResult.error || 'Failed to fetch assignments');
-            }
-
-            const result = await response.json();
-            console.log('Fetched page with', result.items.length, 'assignments.');
-            allAssignments = allAssignments.concat(result.items);
-            lastEvaluatedKey = result.last_evaluated_key ? JSON.parse(lastEvaluatedKey) : null;
-        } while (lastEvaluatedKey);
-
-        return allAssignments;
     }
 
     // 提交表单事件处理
@@ -169,26 +137,34 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const classId = classIdSelect.value;
         const dueDate = dueDateInput.value;
+        const dueHour = dueHourInput.value;
+        const dueMinute = dueMinuteInput.value;
         const subject = subjectSelect.value;
         const teacherName = teacherSelect.value;
-        const submissionMethodValue = submissionMethod.value;
-        const assignmentTitleValue = assignmentTitle.value;
-        const assignmentContentValue = assignmentContent.value;
+        const submissionMethod = submissionMethodSelect.value;
+        const assignmentTitle = assignmentTitleInput.value;
+        const assignmentContent = assignmentContentInput.value;
+
+        // 合并日期和时间
+        const fullDueDate = `${dueDate} ${dueHour}:${dueMinute}`;
 
         const assignmentData = {
             'class_id': classId,
-            'due_date': dueDate,
+            'due_date': fullDueDate,
             'subject': subject,
             'teacher_name': teacherName,
-            'submission_method': submissionMethodValue,
-            'assignment_title': assignmentTitleValue,
-            'assignment_content': assignmentContentValue
+            'submission_method': submissionMethod,
+            'assignment_title': assignmentTitle,
+            'assignment_content': assignmentContent
         };
 
-        console.log('Submitting assignment data:', assignmentData);
+        if (assignmentId) {
+            assignmentData['assignment_id'] = assignmentId;
+        }
 
         try {
-            const response = await fetch('/add_assignment', {
+            const endpoint = assignmentId ? '/edit_assignment' : '/add_assignment';
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -197,18 +173,59 @@ document.addEventListener('DOMContentLoaded', async function() {
                 body: JSON.stringify(assignmentData)
             });
 
-            const result = await response.json();
-
-            if (response.ok) {
-                alert('Assignment updated successfully');
-                window.location.href = '/';
-            } else {
-                alert(`Error: ${result.error}`);
-                console.error('Error response:', result);
+            if (!response.ok) {
+                throw new Error(`Failed to submit assignment: ${response.status}`);
             }
+
+            const result = await response.json();
+            if (assignmentId) {
+                updateLocalStorage(assignmentData);
+            } else {
+                addToLocalStorage({
+                    ...assignmentData,
+                    'assignment-id': result.assignment_id,
+                    'completion-status': 'Incomplete'
+                });
+            }
+
+            window.location.href = '/';
         } catch (error) {
             alert(`Error: ${error.message}`);
-            console.error('Submission error:', error);
         }
     });
+
+    // 更新本地存储中的作业（编辑）
+    function updateLocalStorage(updatedAssignment) {
+        let unfinishedHomework = JSON.parse(localStorage.getItem('unfinishedHomework')) || [];
+        let finishedHomework = JSON.parse(localStorage.getItem('finishedHomework')) || [];
+
+        const allAssignments = [...unfinishedHomework, ...finishedHomework];
+        const index = allAssignments.findIndex(a => a['assignment-id'] === updatedAssignment['assignment_id']);
+
+        if (index !== -1) {
+            allAssignments[index] = {
+                ...allAssignments[index],
+                'class-id': updatedAssignment.class_id,
+                'due-date': updatedAssignment.due_date,
+                'subject': updatedAssignment.subject,
+                'teacher-name': updatedAssignment.teacher_name,
+                'submission-method': updatedAssignment.submission_method,
+                'assignment-title': updatedAssignment.assignment_title,
+                'assignment-content': updatedAssignment.assignment_content
+            };
+
+            unfinishedHomework = allAssignments.filter(a => a['completion-status'] === 'Incomplete');
+            finishedHomework = allAssignments.filter(a => a['completion-status'] === 'Complete');
+
+            localStorage.setItem('unfinishedHomework', JSON.stringify(unfinishedHomework));
+            localStorage.setItem('finishedHomework', JSON.stringify(finishedHomework));
+        }
+    }
+
+    // 添加新作业到本地存储
+    function addToLocalStorage(newAssignment) {
+        let unfinishedHomework = JSON.parse(localStorage.getItem('unfinishedHomework')) || [];
+        unfinishedHomework.push(newAssignment);
+        localStorage.setItem('unfinishedHomework', JSON.stringify(unfinishedHomework));
+    }
 });

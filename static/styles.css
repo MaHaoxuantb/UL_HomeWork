@@ -278,7 +278,7 @@ footer {
     position: absolute;
     top: 10px;
     right: 10px;
-    transition: visibility 0.3s, opacity 0.3s ease;
+    /* 移除对 visibility 和 opacity 的初始设置，确保容器可见 */
 }
 
 /* user-info 按钮样式 */
@@ -299,10 +299,10 @@ footer {
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 8px solid white; /* 三角形的颜色 */
+    border-top: 8px solid black; /* 三角形的颜色，初始向上 */
     margin-left: 10px; /* 与 user-info 的间距 */
     transition: transform 0.3s ease; /* 添加旋转动画 */
-    transform: rotate(0deg); /* 初始状态指向上方 */
+    transform: rotate(0deg); /* 初始状态 */
 }
 
 /* 三角形旋转后的状态，指向下方 */
@@ -310,110 +310,30 @@ footer {
     transform: rotate(180deg);
 }
 
-/* 添加作业按钮 */
-#add-assignment-option {
+/* 下拉菜单选项的通用样式 */
+.user-option {
     background-color: rgba(255, 255, 255, 0.2);
     color: black;
-    padding: 3px;
-    border-radius: 2px;
+    padding: 5px;
+    border-radius: 5px;
     cursor: pointer;
     opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
-    margin-top: 0px; /* 与 user-info 之间的间距 */
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+    margin-top: 5px;
 }
 
-#add-assignment-option.show {
+/* 显示下拉菜单选项 */
+.user-option.show {
     opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+    max-height: 50px; /* 根据需要调整高度 */
 }
 
-#add-assignment-option:hover {
+/* 鼠标悬停效果 */
+.user-option:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
-
-#edit-assignment-option {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: black;
-    padding: 3px;
-    border-radius: 2px;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
-    margin-top: 0px; /* 与 user-info 之间的间距 */
-}
-
-#edit-assignment-option.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-#edit-assignment-option:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-#change-password-option {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: black;
-    padding: 3px;
-    border-radius: 2px;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
-    margin-top: 0px; /* 与 user-info 之间的间距 */
-}
-
-/* 显示按钮的效果 */
-#change-password-option.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    visibility: visible;
-}
-
-#change-password-option:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-/* Logout按钮 */
-#logout-option {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: black;
-    padding: 3px;
-    border-radius: 2px;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden; /* 初始为隐藏 */
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
-    margin-top: 0px; /* 与 user-info 之间的间距 */
-}
-
-#logout-option.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0); /* 恢复到原始位置 */
-}
-
-#logout-option:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-
-
-
-
-
-
-
 
 #settings-btn {
     background: none;
@@ -524,4 +444,38 @@ footer {
 
 #loadMoreButton:hover {
     color: cyan;
+}
+
+.confirmation-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid #333;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 300px;
+    text-align: center;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.confirmation-box button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.confirmation-box .no-button {
+    background-color: #f44336;
+}
+
+.confirmation-box button:hover {
+    opacity: 0.8;
 }
