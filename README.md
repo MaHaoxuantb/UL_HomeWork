@@ -12,17 +12,16 @@ This is a partly open source, non-profit project initiated by students. We provi
 
 [Project History](history.md)
 
----
 
-This whole project is following GNU3.0.
-
----
 ## What We Learned
 - Communication and synchronous work is important.
 - Front-end UI is the same important as function.
 
+For some Info, please visit: [ThomasB.top](https://thomasb.top)
+
+## Project Info
 This project is **no longer under maintenance**, for its dynamic version. We hope that it could be on again. See you~
 
-For some Info, please visit: [ThomasB.top](https://thomasb.top)
+This whole project is following GNU3.0.
 
 All Rights Reserved, © 2025 ULinkHomework
