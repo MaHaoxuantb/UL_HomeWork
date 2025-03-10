@@ -2,7 +2,7 @@
 
 2024/9/3 “We have an Idea”
 
-![IMG_1888.jpeg](Development%20History%20935f62d4fdee417ca316d559e36892b3/IMG_1888.jpeg)
+![IMG_1888.jpeg](IMG_1888.jpeg)
 
 2024/9/5 第一份问卷
 
