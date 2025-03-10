@@ -10,7 +10,7 @@ This is a partly open source, non-profit project initiated by students. We provi
 - Brett
 - Two young men who were once full of dreams.
 
-## [History](history.md)
+[Project History](history.md)
 ---
 
 This whole project is following GNU3.0.
