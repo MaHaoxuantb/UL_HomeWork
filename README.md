@@ -9,6 +9,7 @@ This is a partly open source, non-profit project initiated by students. We provi
 - ThomasB
 - Brett
 
+## [History](history.md)
 ---
 
 This whole project is following GNU3.0.
