@@ -5,6 +5,10 @@ Think of this, have your teacher assigned homework on firefly, on ding-talk grou
 
 This is a partly open source, non-profit project initiated by students. We provide a platform for all works assignment.
 
+## Contributors:
+- ThomasB
+- Brett
+
 ---
 
 This project is no longer under maintenance, for its dynamic version. We hope that it could be on again. See you~
