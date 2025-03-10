@@ -19,4 +19,4 @@ This project is **no longer under maintenance**, for its dynamic version. We hop
 
 For some Info, please visit: [ThomasB.top](https://thomasb.top)
 
-All Rights Reserved, © 2025 ULinkHomework, ThomasBInternetServices
+All Rights Reserved, © 2025 ULinkHomework
