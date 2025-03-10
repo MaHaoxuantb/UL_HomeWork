@@ -17,6 +17,6 @@ This project is following GNU3.0.
 
 This project is **no longer under maintenance**, for its dynamic version. We hope that it could be on again. See you~
 
-For some Info, please visit: [https://ThomasB.top](ThomasB.top)
+For some Info, please visit: [ThomasB.top](https://thomasb.top)
 
 All Rights Reserved, © 2025 ULinkHomework, ThomasBInternetServices
