@@ -7,4 +7,6 @@ This is a partly open source, non-profit project initiated by students. We provi
 
 ---
 
-Get start with SPEC.
+This project is no longer under maintenance, for its dynamic version. We hope that it could be on again. See you~
+
+All Rights Reserved, © 2025 ULinkHomework, ThomasBInternetServices
