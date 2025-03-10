@@ -8,6 +8,7 @@ This is a partly open source, non-profit project initiated by students. We provi
 ## Contributors:
 - ThomasB
 - Brett
+- Two young men who were once full of dreams.
 
 ## [History](history.md)
 ---
@@ -15,6 +16,9 @@ This is a partly open source, non-profit project initiated by students. We provi
 This whole project is following GNU3.0.
 
 ---
+## What We Learned
+- Communication and synchronous work is important.
+- Front-end UI is the same important as function.
 
 This project is **no longer under maintenance**, for its dynamic version. We hope that it could be on again. See you~
 
