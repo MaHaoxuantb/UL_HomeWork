@@ -11,7 +11,7 @@ This is a partly open source, non-profit project initiated by students. We provi
 
 ---
 
-This project is following GNU3.0.
+This whole project is following GNU3.0.
 
 ---
 
